@@ -491,6 +491,31 @@ assign GPIO_0[7] = left_filter_output3;
 // ======================================================
 // === Filters ==========================================
 // ======================================================
+
+
+assign right_filter_output = 
+ right_filter_output1 + right_filter_output2 + right_filter_output3 + right_filter_output4                               
+ + right_filter_output5 + right_filter_output6 + right_filter_output7 + right_filter_output8                               
+ + right_filter_output9 + right_filter_output10 + right_filter_output11 + right_filter_output12                               
+ + right_filter_output13 + right_filter_output14 + right_filter_output15 + right_filter_output16                               
+ + right_filter_output17 + right_filter_output18 + right_filter_output19 + right_filter_output20                               
+ + right_filter_output21 + right_filter_output22 + right_filter_output23 + right_filter_output24                               
+ + right_filter_output25 + right_filter_output26 + right_filter_output27 + right_filter_output28                               
+ + right_filter_output29 + right_filter_output30 + right_filter_output31 + right_filter_output32; 
+ 
+ 
+assign left_filter_output = 
+ left_filter_output1 + left_filter_output2 + left_filter_output3 + left_filter_output4                               
+ + left_filter_output5 + left_filter_output6 + left_filter_output7 + left_filter_output8                               
+ + left_filter_output9 + left_filter_output10 + left_filter_output11 + left_filter_output12                               
+ + left_filter_output13 + left_filter_output14 + left_filter_output15 + left_filter_output16                               
+ + left_filter_output17 + left_filter_output18 + left_filter_output19 + left_filter_output20                               
+ + left_filter_output21 + left_filter_output22 + left_filter_output23 + left_filter_output24                               
+ + left_filter_output25 + left_filter_output26 + left_filter_output27 + left_filter_output28                               
+ + left_filter_output29 + left_filter_output30 + left_filter_output31 + left_filter_output32; 
+
+
+
 wire [15:0]    right_filter_output , left_filter_output, 
                right_filter_output1 , left_filter_output1, 
                right_filter_output2 , left_filter_output2, 
@@ -528,16 +553,14 @@ wire [15:0]    right_filter_output , left_filter_output,
  
  
  
- 
- 
 //Filter 1 Right 
 //Filter 1: frequency=299.991723 
 //Filter 1: BW=0.035018 
-//Filter 1: shifted freq=299.991723 
+//Filter 1: shifted freq=899.975168 
 IIR2_18bit_fixed filter1_RIGHT( 
      .audio_out (right_filter_output1), 
      .audio_in (right_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd80528415), 
      .b1 (18'sd45), 
      .b2 (18'sd0), 
      .b3 (-18'sd45), 
@@ -552,11 +575,11 @@ IIR2_18bit_fixed filter1_RIGHT(
 //Filter 1 Left 
 //Filter 1: frequency=299.991723 
 //Filter 1: BW=0.035018 
-//Filter 1: shifted freq=299.991723 
+//Filter 1: shifted freq=899.975168 
 IIR2_18bit_fixed filter1_LEFT( 
      .audio_out (left_filter_output1), 
      .audio_in (left_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd80528415), 
      .b1 (18'sd45), 
      .b2 (18'sd0), 
      .b3 (-18'sd45), 
@@ -571,11 +594,11 @@ IIR2_18bit_fixed filter1_LEFT(
 //Filter 2 Right 
 //Filter 2: frequency=347.381037 
 //Filter 2: BW=0.035015 
-//Filter 2: shifted freq=347.381037 
+//Filter 2: shifted freq=1042.143111 
 IIR2_18bit_fixed filter2_RIGHT( 
      .audio_out (right_filter_output2), 
      .audio_in (right_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd93249387), 
      .b1 (18'sd52), 
      .b2 (18'sd0), 
      .b3 (-18'sd52), 
@@ -590,11 +613,11 @@ IIR2_18bit_fixed filter2_RIGHT(
 //Filter 2 Left 
 //Filter 2: frequency=347.381037 
 //Filter 2: BW=0.035015 
-//Filter 2: shifted freq=347.381037 
+//Filter 2: shifted freq=1042.143111 
 IIR2_18bit_fixed filter2_LEFT( 
      .audio_out (left_filter_output2), 
      .audio_in (left_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd93249387), 
      .b1 (18'sd52), 
      .b2 (18'sd0), 
      .b3 (-18'sd52), 
@@ -610,16 +633,16 @@ IIR2_18bit_fixed filter2_LEFT(
  wire 		[15:0] debug_right7, debug_left7;
  wire signed[15:0] debug_right6, debug_left6;
  wire signed[15:0] debug_right5, debug_left5;
- 
+
  
 //Filter 3 Right 
 //Filter 3: frequency=397.016117 
 //Filter 3: BW=0.035013 
-//Filter 3: shifted freq=397.016117 
+//Filter 3: shifted freq=1191.048352 
 IIR2_18bit_fixed filter3_RIGHT( 
      .audio_out (right_filter_output3), 
      .audio_in (right_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd106573202), 
      .b1 (18'sd59), 
      .b2 (18'sd0), 
      .b3 (-18'sd59), 
@@ -628,22 +651,23 @@ IIR2_18bit_fixed filter3_RIGHT(
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
      .reset(reset),
- 	  .voice_in_abs( debug_right9),
- 	  .voice_low_new(debug_right8),
- 	  .wave(debug_right7),
- 	  .modulated_voice(debug_right6),
+	  .voice_in_abs( debug_right9),
+	  .voice_low_new(debug_right8),
+	  .wave(debug_right7),
+	  .modulated_voice(debug_right6),
 	  .f1_mac_new(debug_right5) 
+ 
 ) ; //end filter 
  
  
 //Filter 3 Left 
 //Filter 3: frequency=397.016117 
 //Filter 3: BW=0.035013 
-//Filter 3: shifted freq=397.016117 
+//Filter 3: shifted freq=1191.048352 
 IIR2_18bit_fixed filter3_LEFT( 
      .audio_out (left_filter_output3), 
      .audio_in (left_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd106573202), 
      .b1 (18'sd59), 
      .b2 (18'sd0), 
      .b3 (-18'sd59), 
@@ -656,19 +680,18 @@ IIR2_18bit_fixed filter3_LEFT(
 	  .voice_low_new(debug_left8),
 	  .wave(debug_left7),
 	  .modulated_voice(debug_left6),
-	  .f1_mac_new(debug_left5)
- 
+	  .f1_mac_new(debug_left5) 
 ) ; //end filter 
  
  
 //Filter 4 Right 
 //Filter 4: frequency=449.003389 
 //Filter 4: BW=0.035012 
-//Filter 4: shifted freq=449.003389 
+//Filter 4: shifted freq=1347.010168 
 IIR2_18bit_fixed filter4_RIGHT( 
      .audio_out (right_filter_output4), 
      .audio_in (right_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd120528430), 
      .b1 (18'sd67), 
      .b2 (18'sd0), 
      .b3 (-18'sd67), 
@@ -683,11 +706,11 @@ IIR2_18bit_fixed filter4_RIGHT(
 //Filter 4 Left 
 //Filter 4: frequency=449.003389 
 //Filter 4: BW=0.035012 
-//Filter 4: shifted freq=449.003389 
+//Filter 4: shifted freq=1347.010168 
 IIR2_18bit_fixed filter4_LEFT( 
      .audio_out (left_filter_output4), 
      .audio_in (left_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd120528430), 
      .b1 (18'sd67), 
      .b2 (18'sd0), 
      .b3 (-18'sd67), 
@@ -702,11 +725,11 @@ IIR2_18bit_fixed filter4_LEFT(
 //Filter 5 Right 
 //Filter 5: frequency=503.454323 
 //Filter 5: BW=0.035010 
-//Filter 5: shifted freq=503.454323 
+//Filter 5: shifted freq=1510.362968 
 IIR2_18bit_fixed filter5_RIGHT( 
      .audio_out (right_filter_output5), 
      .audio_in (right_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd135144991), 
      .b1 (18'sd75), 
      .b2 (18'sd0), 
      .b3 (-18'sd75), 
@@ -721,11 +744,11 @@ IIR2_18bit_fixed filter5_RIGHT(
 //Filter 5 Left 
 //Filter 5: frequency=503.454323 
 //Filter 5: BW=0.035010 
-//Filter 5: shifted freq=503.454323 
+//Filter 5: shifted freq=1510.362968 
 IIR2_18bit_fixed filter5_LEFT( 
      .audio_out (left_filter_output5), 
      .audio_in (left_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd135144991), 
      .b1 (18'sd75), 
      .b2 (18'sd0), 
      .b3 (-18'sd75), 
@@ -740,11 +763,11 @@ IIR2_18bit_fixed filter5_LEFT(
 //Filter 6 Right 
 //Filter 6: frequency=560.485670 
 //Filter 6: BW=0.035009 
-//Filter 6: shifted freq=560.485670 
+//Filter 6: shifted freq=1681.457010 
 IIR2_18bit_fixed filter6_RIGHT( 
      .audio_out (right_filter_output6), 
      .audio_in (right_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd150454226), 
      .b1 (18'sd84), 
      .b2 (18'sd0), 
      .b3 (-18'sd84), 
@@ -759,11 +782,11 @@ IIR2_18bit_fixed filter6_RIGHT(
 //Filter 6 Left 
 //Filter 6: frequency=560.485670 
 //Filter 6: BW=0.035009 
-//Filter 6: shifted freq=560.485670 
+//Filter 6: shifted freq=1681.457010 
 IIR2_18bit_fixed filter6_LEFT( 
      .audio_out (left_filter_output6), 
      .audio_in (left_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd150454226), 
      .b1 (18'sd84), 
      .b2 (18'sd0), 
      .b3 (-18'sd84), 
@@ -778,11 +801,11 @@ IIR2_18bit_fixed filter6_LEFT(
 //Filter 7 Right 
 //Filter 7: frequency=620.219716 
 //Filter 7: BW=0.035008 
-//Filter 7: shifted freq=620.219716 
+//Filter 7: shifted freq=1860.659148 
 IIR2_18bit_fixed filter7_RIGHT( 
      .audio_out (right_filter_output7), 
      .audio_in (right_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd166488962), 
      .b1 (18'sd93), 
      .b2 (18'sd0), 
      .b3 (-18'sd93), 
@@ -797,11 +820,11 @@ IIR2_18bit_fixed filter7_RIGHT(
 //Filter 7 Left 
 //Filter 7: frequency=620.219716 
 //Filter 7: BW=0.035008 
-//Filter 7: shifted freq=620.219716 
+//Filter 7: shifted freq=1860.659148 
 IIR2_18bit_fixed filter7_LEFT( 
      .audio_out (left_filter_output7), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd55496321), 
+     .freq_sw (32'd166488962), 
      .b1 (18'sd93), 
      .b2 (18'sd0), 
      .b3 (-18'sd93), 
@@ -816,11 +839,11 @@ IIR2_18bit_fixed filter7_LEFT(
 //Filter 8 Right 
 //Filter 8: frequency=682.784541 
 //Filter 8: BW=0.035008 
-//Filter 8: shifted freq=682.784541 
+//Filter 8: shifted freq=2048.353623 
 IIR2_18bit_fixed filter8_RIGHT( 
      .audio_out (right_filter_output8), 
      .audio_in (right_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd183283580), 
      .b1 (18'sd102), 
      .b2 (18'sd0), 
      .b3 (-18'sd102), 
@@ -835,11 +858,11 @@ IIR2_18bit_fixed filter8_RIGHT(
 //Filter 8 Left 
 //Filter 8: frequency=682.784541 
 //Filter 8: BW=0.035008 
-//Filter 8: shifted freq=682.784541 
+//Filter 8: shifted freq=2048.353623 
 IIR2_18bit_fixed filter8_LEFT( 
      .audio_out (left_filter_output8), 
      .audio_in (left_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd183283580), 
      .b1 (18'sd102), 
      .b2 (18'sd0), 
      .b3 (-18'sd102), 
@@ -854,11 +877,11 @@ IIR2_18bit_fixed filter8_LEFT(
 //Filter 9 Right 
 //Filter 9: frequency=748.314295 
 //Filter 9: BW=0.035007 
-//Filter 9: shifted freq=748.314295 
+//Filter 9: shifted freq=2244.942885 
 IIR2_18bit_fixed filter9_RIGHT( 
      .audio_out (right_filter_output9), 
      .audio_in (right_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd200874089), 
      .b1 (18'sd112), 
      .b2 (18'sd0), 
      .b3 (-18'sd112), 
@@ -873,11 +896,11 @@ IIR2_18bit_fixed filter9_RIGHT(
 //Filter 9 Left 
 //Filter 9: frequency=748.314295 
 //Filter 9: BW=0.035007 
-//Filter 9: shifted freq=748.314295 
+//Filter 9: shifted freq=2244.942885 
 IIR2_18bit_fixed filter9_LEFT( 
      .audio_out (left_filter_output9), 
      .audio_in (left_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd200874089), 
      .b1 (18'sd112), 
      .b2 (18'sd0), 
      .b3 (-18'sd112), 
@@ -892,11 +915,11 @@ IIR2_18bit_fixed filter9_LEFT(
 //Filter10 Right 
 //Filter10: frequency=816.949484 
 //Filter10: BW=0.035006 
-//Filter10: shifted freq=816.949484 
+//Filter10: shifted freq=2450.848453 
 IIR2_18bit_fixed filter10_RIGHT( 
      .audio_out (right_filter_output10), 
      .audio_in (right_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd219298207), 
      .b1 (18'sd122), 
      .b2 (18'sd0), 
      .b3 (-18'sd122), 
@@ -911,11 +934,11 @@ IIR2_18bit_fixed filter10_RIGHT(
 //Filter10 Left 
 //Filter10: frequency=816.949484 
 //Filter10: BW=0.035006 
-//Filter10: shifted freq=816.949484 
+//Filter10: shifted freq=2450.848453 
 IIR2_18bit_fixed filter10_LEFT( 
      .audio_out (left_filter_output10), 
      .audio_in (left_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd219298207), 
      .b1 (18'sd122), 
      .b2 (18'sd0), 
      .b3 (-18'sd122), 
@@ -930,11 +953,11 @@ IIR2_18bit_fixed filter10_LEFT(
 //Filter11 Right 
 //Filter11: frequency=888.837275 
 //Filter11: BW=0.035006 
-//Filter11: shifted freq=888.837275 
+//Filter11: shifted freq=2666.511826 
 IIR2_18bit_fixed filter11_RIGHT( 
      .audio_out (right_filter_output11), 
      .audio_in (right_audio_input), 
-     .freq_sw ({SW[9:0], 16'b0}), 
+     .freq_sw (32'd238595439), 
      .b1 (18'sd133), 
      .b2 (18'sd0), 
      .b3 (-18'sd133), 
@@ -949,11 +972,11 @@ IIR2_18bit_fixed filter11_RIGHT(
 //Filter11 Left 
 //Filter11: frequency=888.837275 
 //Filter11: BW=0.035006 
-//Filter11: shifted freq=888.837275 
+//Filter11: shifted freq=2666.511826 
 IIR2_18bit_fixed filter11_LEFT( 
      .audio_out (left_filter_output11), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd79531813), 
+     .freq_sw (32'd238595439), 
      .b1 (18'sd133), 
      .b2 (18'sd0), 
      .b3 (-18'sd133), 
@@ -968,11 +991,11 @@ IIR2_18bit_fixed filter11_LEFT(
 //Filter12 Right 
 //Filter12: frequency=964.131808 
 //Filter12: BW=0.035005 
-//Filter12: shifted freq=964.131808 
+//Filter12: shifted freq=2892.395423 
 IIR2_18bit_fixed filter12_RIGHT( 
      .audio_out (right_filter_output12), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd86269054), 
+     .freq_sw (32'd258807161), 
      .b1 (18'sd144), 
      .b2 (18'sd0), 
      .b3 (-18'sd144), 
@@ -987,11 +1010,11 @@ IIR2_18bit_fixed filter12_RIGHT(
 //Filter12 Left 
 //Filter12: frequency=964.131808 
 //Filter12: BW=0.035005 
-//Filter12: shifted freq=964.131808 
+//Filter12: shifted freq=2892.395423 
 IIR2_18bit_fixed filter12_LEFT( 
      .audio_out (left_filter_output12), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd86269054), 
+     .freq_sw (32'd258807161), 
      .b1 (18'sd144), 
      .b2 (18'sd0), 
      .b3 (-18'sd144), 
@@ -1002,15 +1025,15 @@ IIR2_18bit_fixed filter12_LEFT(
      .reset(reset) 
 ) ; //end filter 
  
-/* 
+ 
 //Filter13 Right 
 //Filter13: frequency=1042.994526 
 //Filter13: BW=0.035005 
-//Filter13: shifted freq=1042.994526 
+//Filter13: shifted freq=3128.983578 
 IIR2_18bit_fixed filter13_RIGHT( 
      .audio_out (right_filter_output13), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd93325570), 
+     .freq_sw (32'd279976711), 
      .b1 (18'sd156), 
      .b2 (18'sd0), 
      .b3 (-18'sd156), 
@@ -1025,11 +1048,11 @@ IIR2_18bit_fixed filter13_RIGHT(
 //Filter13 Left 
 //Filter13: frequency=1042.994526 
 //Filter13: BW=0.035005 
-//Filter13: shifted freq=1042.994526 
+//Filter13: shifted freq=3128.983578 
 IIR2_18bit_fixed filter13_LEFT( 
      .audio_out (left_filter_output13), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd93325570), 
+     .freq_sw (32'd279976711), 
      .b1 (18'sd156), 
      .b2 (18'sd0), 
      .b3 (-18'sd156), 
@@ -1044,11 +1067,11 @@ IIR2_18bit_fixed filter13_LEFT(
 //Filter14 Right 
 //Filter14: frequency=1125.594525 
 //Filter14: BW=0.035005 
-//Filter14: shifted freq=1125.594525 
+//Filter14: shifted freq=3376.783576 
 IIR2_18bit_fixed filter14_RIGHT( 
      .audio_out (right_filter_output14), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd100716493), 
+     .freq_sw (32'd302149480), 
      .b1 (18'sd168), 
      .b2 (18'sd0), 
      .b3 (-18'sd168), 
@@ -1063,11 +1086,11 @@ IIR2_18bit_fixed filter14_RIGHT(
 //Filter14 Left 
 //Filter14: frequency=1125.594525 
 //Filter14: BW=0.035005 
-//Filter14: shifted freq=1125.594525 
+//Filter14: shifted freq=3376.783576 
 IIR2_18bit_fixed filter14_LEFT( 
      .audio_out (left_filter_output14), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd100716493), 
+     .freq_sw (32'd302149480), 
      .b1 (18'sd168), 
      .b2 (18'sd0), 
      .b3 (-18'sd168), 
@@ -1082,11 +1105,11 @@ IIR2_18bit_fixed filter14_LEFT(
 //Filter15 Right 
 //Filter15: frequency=1212.108914 
 //Filter15: BW=0.035004 
-//Filter15: shifted freq=1212.108914 
+//Filter15: shifted freq=3636.326743 
 IIR2_18bit_fixed filter15_RIGHT( 
      .audio_out (right_filter_output15), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd108457670), 
+     .freq_sw (32'd325373009), 
      .b1 (18'sd181), 
      .b2 (18'sd0), 
      .b3 (-18'sd181), 
@@ -1101,11 +1124,11 @@ IIR2_18bit_fixed filter15_RIGHT(
 //Filter15 Left 
 //Filter15: frequency=1212.108914 
 //Filter15: BW=0.035004 
-//Filter15: shifted freq=1212.108914 
+//Filter15: shifted freq=3636.326743 
 IIR2_18bit_fixed filter15_LEFT( 
      .audio_out (left_filter_output15), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd108457670), 
+     .freq_sw (32'd325373009), 
      .b1 (18'sd181), 
      .b2 (18'sd0), 
      .b3 (-18'sd181), 
@@ -1120,11 +1143,11 @@ IIR2_18bit_fixed filter15_LEFT(
 //Filter16 Right 
 //Filter16: frequency=1302.723195 
 //Filter16: BW=0.035004 
-//Filter16: shifted freq=1302.723195 
+//Filter16: shifted freq=3908.169584 
 IIR2_18bit_fixed filter16_RIGHT( 
      .audio_out (right_filter_output16), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd116565698), 
+     .freq_sw (32'd349697095), 
      .b1 (18'sd195), 
      .b2 (18'sd0), 
      .b3 (-18'sd195), 
@@ -1139,11 +1162,11 @@ IIR2_18bit_fixed filter16_RIGHT(
 //Filter16 Left 
 //Filter16: frequency=1302.723195 
 //Filter16: BW=0.035004 
-//Filter16: shifted freq=1302.723195 
+//Filter16: shifted freq=3908.169584 
 IIR2_18bit_fixed filter16_LEFT( 
      .audio_out (left_filter_output16), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd116565698), 
+     .freq_sw (32'd349697095), 
      .b1 (18'sd195), 
      .b2 (18'sd0), 
      .b3 (-18'sd195), 
@@ -1154,15 +1177,15 @@ IIR2_18bit_fixed filter16_LEFT(
      .reset(reset) 
 ) ; //end filter 
  
- 
+/*
 //Filter17 Right 
 //Filter17: frequency=1397.631659 
 //Filter17: BW=0.035004 
-//Filter17: shifted freq=1397.631659 
+//Filter17: shifted freq=4192.894978 
 IIR2_18bit_fixed filter17_RIGHT( 
      .audio_out (right_filter_output17), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd125057964), 
+     .freq_sw (32'd375173892), 
      .b1 (18'sd209), 
      .b2 (18'sd0), 
      .b3 (-18'sd209), 
@@ -1177,11 +1200,11 @@ IIR2_18bit_fixed filter17_RIGHT(
 //Filter17 Left 
 //Filter17: frequency=1397.631659 
 //Filter17: BW=0.035004 
-//Filter17: shifted freq=1397.631659 
+//Filter17: shifted freq=4192.894978 
 IIR2_18bit_fixed filter17_LEFT( 
      .audio_out (left_filter_output17), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd125057964), 
+     .freq_sw (32'd375173892), 
      .b1 (18'sd209), 
      .b2 (18'sd0), 
      .b3 (-18'sd209), 
@@ -1196,11 +1219,11 @@ IIR2_18bit_fixed filter17_LEFT(
 //Filter18 Right 
 //Filter18: frequency=1497.037808 
 //Filter18: BW=0.035004 
-//Filter18: shifted freq=1497.037808 
+//Filter18: shifted freq=4491.113425 
 IIR2_18bit_fixed filter18_RIGHT( 
      .audio_out (right_filter_output18), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd133952676), 
+     .freq_sw (32'd401858027), 
      .b1 (18'sd223), 
      .b2 (18'sd0), 
      .b3 (-18'sd223), 
@@ -1215,11 +1238,11 @@ IIR2_18bit_fixed filter18_RIGHT(
 //Filter18 Left 
 //Filter18: frequency=1497.037808 
 //Filter18: BW=0.035004 
-//Filter18: shifted freq=1497.037808 
+//Filter18: shifted freq=4491.113425 
 IIR2_18bit_fixed filter18_LEFT( 
      .audio_out (left_filter_output18), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd133952676), 
+     .freq_sw (32'd401858027), 
      .b1 (18'sd223), 
      .b2 (18'sd0), 
      .b3 (-18'sd223), 
@@ -1234,11 +1257,11 @@ IIR2_18bit_fixed filter18_LEFT(
 //Filter19 Right 
 //Filter19: frequency=1601.154785 
 //Filter19: BW=0.035003 
-//Filter19: shifted freq=1601.154785 
+//Filter19: shifted freq=4803.464356 
 IIR2_18bit_fixed filter19_RIGHT( 
      .audio_out (right_filter_output19), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd143268905), 
+     .freq_sw (32'd429806715), 
      .b1 (18'sd239), 
      .b2 (18'sd0), 
      .b3 (-18'sd239), 
@@ -1253,11 +1276,11 @@ IIR2_18bit_fixed filter19_RIGHT(
 //Filter19 Left 
 //Filter19: frequency=1601.154785 
 //Filter19: BW=0.035003 
-//Filter19: shifted freq=1601.154785 
+//Filter19: shifted freq=4803.464356 
 IIR2_18bit_fixed filter19_LEFT( 
      .audio_out (left_filter_output19), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd143268905), 
+     .freq_sw (32'd429806715), 
      .b1 (18'sd239), 
      .b2 (18'sd0), 
      .b3 (-18'sd239), 
@@ -1272,11 +1295,11 @@ IIR2_18bit_fixed filter19_LEFT(
 //Filter20 Right 
 //Filter20: frequency=1710.205836 
 //Filter20: BW=0.035003 
-//Filter20: shifted freq=1710.205836 
+//Filter20: shifted freq=5130.617507 
 IIR2_18bit_fixed filter20_RIGHT( 
      .audio_out (right_filter_output20), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd153026628), 
+     .freq_sw (32'd459079883), 
      .b1 (18'sd255), 
      .b2 (18'sd0), 
      .b3 (-18'sd255), 
@@ -1291,11 +1314,11 @@ IIR2_18bit_fixed filter20_RIGHT(
 //Filter20 Left 
 //Filter20: frequency=1710.205836 
 //Filter20: BW=0.035003 
-//Filter20: shifted freq=1710.205836 
+//Filter20: shifted freq=5130.617507 
 IIR2_18bit_fixed filter20_LEFT( 
      .audio_out (left_filter_output20), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd153026628), 
+     .freq_sw (32'd459079883), 
      .b1 (18'sd255), 
      .b2 (18'sd0), 
      .b3 (-18'sd255), 
@@ -1310,11 +1333,11 @@ IIR2_18bit_fixed filter20_LEFT(
 //Filter21 Right 
 //Filter21: frequency=1824.424783 
 //Filter21: BW=0.035003 
-//Filter21: shifted freq=1824.424783 
+//Filter21: shifted freq=5473.274349 
 IIR2_18bit_fixed filter21_RIGHT( 
      .audio_out (right_filter_output21), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd163246766), 
+     .freq_sw (32'd489740299), 
      .b1 (18'sd272), 
      .b2 (18'sd0), 
      .b3 (-18'sd272), 
@@ -1329,11 +1352,11 @@ IIR2_18bit_fixed filter21_RIGHT(
 //Filter21 Left 
 //Filter21: frequency=1824.424783 
 //Filter21: BW=0.035003 
-//Filter21: shifted freq=1824.424783 
+//Filter21: shifted freq=5473.274349 
 IIR2_18bit_fixed filter21_LEFT( 
      .audio_out (left_filter_output21), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd163246766), 
+     .freq_sw (32'd489740299), 
      .b1 (18'sd272), 
      .b2 (18'sd0), 
      .b3 (-18'sd272), 
@@ -1348,11 +1371,11 @@ IIR2_18bit_fixed filter21_LEFT(
 //Filter22 Right 
 //Filter22: frequency=1944.056533 
 //Filter22: BW=0.035003 
-//Filter22: shifted freq=1944.056533 
+//Filter22: shifted freq=5832.169599 
 IIR2_18bit_fixed filter22_RIGHT( 
      .audio_out (right_filter_output22), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd173951234), 
+     .freq_sw (32'd521853702), 
      .b1 (18'sd290), 
      .b2 (18'sd0), 
      .b3 (-18'sd290), 
@@ -1367,11 +1390,11 @@ IIR2_18bit_fixed filter22_RIGHT(
 //Filter22 Left 
 //Filter22: frequency=1944.056533 
 //Filter22: BW=0.035003 
-//Filter22: shifted freq=1944.056533 
+//Filter22: shifted freq=5832.169599 
 IIR2_18bit_fixed filter22_LEFT( 
      .audio_out (left_filter_output22), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd173951234), 
+     .freq_sw (32'd521853702), 
      .b1 (18'sd290), 
      .b2 (18'sd0), 
      .b3 (-18'sd290), 
@@ -1386,11 +1409,11 @@ IIR2_18bit_fixed filter22_LEFT(
 //Filter23 Right 
 //Filter23: frequency=2069.357596 
 //Filter23: BW=0.035003 
-//Filter23: shifted freq=2069.357596 
+//Filter23: shifted freq=6208.072789 
 IIR2_18bit_fixed filter23_RIGHT( 
      .audio_out (right_filter_output23), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd185162983), 
+     .freq_sw (32'd555488950), 
      .b1 (18'sd309), 
      .b2 (18'sd0), 
      .b3 (-18'sd309), 
@@ -1405,11 +1428,11 @@ IIR2_18bit_fixed filter23_RIGHT(
 //Filter23 Left 
 //Filter23: frequency=2069.357596 
 //Filter23: BW=0.035003 
-//Filter23: shifted freq=2069.357596 
+//Filter23: shifted freq=6208.072789 
 IIR2_18bit_fixed filter23_LEFT( 
      .audio_out (left_filter_output23), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd185162983), 
+     .freq_sw (32'd555488950), 
      .b1 (18'sd309), 
      .b2 (18'sd0), 
      .b3 (-18'sd309), 
@@ -1424,11 +1447,11 @@ IIR2_18bit_fixed filter23_LEFT(
 //Filter24 Right 
 //Filter24: frequency=2200.596640 
 //Filter24: BW=0.035002 
-//Filter24: shifted freq=2200.596640 
+//Filter24: shifted freq=6601.789921 
 IIR2_18bit_fixed filter24_RIGHT( 
      .audio_out (right_filter_output24), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd196906054), 
+     .freq_sw (32'd590718163), 
      .b1 (18'sd328), 
      .b2 (18'sd0), 
      .b3 (-18'sd328), 
@@ -1443,11 +1466,11 @@ IIR2_18bit_fixed filter24_RIGHT(
 //Filter24 Left 
 //Filter24: frequency=2200.596640 
 //Filter24: BW=0.035002 
-//Filter24: shifted freq=2200.596640 
+//Filter24: shifted freq=6601.789921 
 IIR2_18bit_fixed filter24_LEFT( 
      .audio_out (left_filter_output24), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd196906054), 
+     .freq_sw (32'd590718163), 
      .b1 (18'sd328), 
      .b2 (18'sd0), 
      .b3 (-18'sd328), 
@@ -1462,11 +1485,11 @@ IIR2_18bit_fixed filter24_LEFT(
 //Filter25 Right 
 //Filter25: frequency=2338.055064 
 //Filter25: BW=0.035002 
-//Filter25: shifted freq=2338.055064 
+//Filter25: shifted freq=7014.165193 
 IIR2_18bit_fixed filter25_RIGHT( 
      .audio_out (right_filter_output25), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd209205626), 
+     .freq_sw (32'd627616877), 
      .b1 (18'sd349), 
      .b2 (18'sd0), 
      .b3 (-18'sd349), 
@@ -1481,11 +1504,11 @@ IIR2_18bit_fixed filter25_RIGHT(
 //Filter25 Left 
 //Filter25: frequency=2338.055064 
 //Filter25: BW=0.035002 
-//Filter25: shifted freq=2338.055064 
+//Filter25: shifted freq=7014.165193 
 IIR2_18bit_fixed filter25_LEFT( 
      .audio_out (left_filter_output25), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd209205626), 
+     .freq_sw (32'd627616877), 
      .b1 (18'sd349), 
      .b2 (18'sd0), 
      .b3 (-18'sd349), 
@@ -1500,11 +1523,11 @@ IIR2_18bit_fixed filter25_LEFT(
 //Filter26 Right 
 //Filter26: frequency=2482.027602 
 //Filter26: BW=0.035002 
-//Filter26: shifted freq=2482.027602 
+//Filter26: shifted freq=7446.082807 
 IIR2_18bit_fixed filter26_RIGHT( 
      .audio_out (right_filter_output26), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd222088070), 
+     .freq_sw (32'd666264211), 
      .b1 (18'sd370), 
      .b2 (18'sd0), 
      .b3 (-18'sd370), 
@@ -1519,11 +1542,11 @@ IIR2_18bit_fixed filter26_RIGHT(
 //Filter26 Left 
 //Filter26: frequency=2482.027602 
 //Filter26: BW=0.035002 
-//Filter26: shifted freq=2482.027602 
+//Filter26: shifted freq=7446.082807 
 IIR2_18bit_fixed filter26_LEFT( 
      .audio_out (left_filter_output26), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd222088070), 
+     .freq_sw (32'd666264211), 
      .b1 (18'sd370), 
      .b2 (18'sd0), 
      .b3 (-18'sd370), 
@@ -1538,11 +1561,11 @@ IIR2_18bit_fixed filter26_LEFT(
 //Filter27 Right 
 //Filter27: frequency=2632.822957 
 //Filter27: BW=0.035002 
-//Filter27: shifted freq=2632.822957 
+//Filter27: shifted freq=7898.468871 
 IIR2_18bit_fixed filter27_RIGHT( 
      .audio_out (right_filter_output27), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd235581010), 
+     .freq_sw (32'd706743031), 
      .b1 (18'sd392), 
      .b2 (18'sd0), 
      .b3 (-18'sd392), 
@@ -1557,11 +1580,11 @@ IIR2_18bit_fixed filter27_RIGHT(
 //Filter27 Left 
 //Filter27: frequency=2632.822957 
 //Filter27: BW=0.035002 
-//Filter27: shifted freq=2632.822957 
+//Filter27: shifted freq=7898.468871 
 IIR2_18bit_fixed filter27_LEFT( 
      .audio_out (left_filter_output27), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd235581010), 
+     .freq_sw (32'd706743031), 
      .b1 (18'sd392), 
      .b2 (18'sd0), 
      .b3 (-18'sd392), 
@@ -1576,11 +1599,11 @@ IIR2_18bit_fixed filter27_LEFT(
 //Filter28 Right 
 //Filter28: frequency=2790.764459 
 //Filter28: BW=0.035002 
-//Filter28: shifted freq=2790.764459 
+//Filter28: shifted freq=8372.293378 
 IIR2_18bit_fixed filter28_RIGHT( 
      .audio_out (right_filter_output28), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd249713377), 
+     .freq_sw (32'd749140130), 
      .b1 (18'sd416), 
      .b2 (18'sd0), 
      .b3 (-18'sd416), 
@@ -1595,11 +1618,11 @@ IIR2_18bit_fixed filter28_RIGHT(
 //Filter28 Left 
 //Filter28: frequency=2790.764459 
 //Filter28: BW=0.035002 
-//Filter28: shifted freq=2790.764459 
+//Filter28: shifted freq=8372.293378 
 IIR2_18bit_fixed filter28_LEFT( 
      .audio_out (left_filter_output28), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd249713377), 
+     .freq_sw (32'd749140130), 
      .b1 (18'sd416), 
      .b2 (18'sd0), 
      .b3 (-18'sd416), 
@@ -1614,11 +1637,11 @@ IIR2_18bit_fixed filter28_LEFT(
 //Filter29 Right 
 //Filter29: frequency=2956.190763 
 //Filter29: BW=0.035002 
-//Filter29: shifted freq=2956.190763 
+//Filter29: shifted freq=8868.572289 
 IIR2_18bit_fixed filter29_RIGHT( 
      .audio_out (right_filter_output29), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd264515472), 
+     .freq_sw (32'd793546415), 
      .b1 (18'sd440), 
      .b2 (18'sd0), 
      .b3 (-18'sd440), 
@@ -1633,11 +1656,11 @@ IIR2_18bit_fixed filter29_RIGHT(
 //Filter29 Left 
 //Filter29: frequency=2956.190763 
 //Filter29: BW=0.035002 
-//Filter29: shifted freq=2956.190763 
+//Filter29: shifted freq=8868.572289 
 IIR2_18bit_fixed filter29_LEFT( 
      .audio_out (left_filter_output29), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd264515472), 
+     .freq_sw (32'd793546415), 
      .b1 (18'sd440), 
      .b2 (18'sd0), 
      .b3 (-18'sd440), 
@@ -1652,11 +1675,11 @@ IIR2_18bit_fixed filter29_LEFT(
 //Filter30 Right 
 //Filter30: frequency=3129.456570 
 //Filter30: BW=0.035002 
-//Filter30: shifted freq=3129.456570 
+//Filter30: shifted freq=9388.369711 
 IIR2_18bit_fixed filter30_RIGHT( 
      .audio_out (right_filter_output30), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd280019034), 
+     .freq_sw (32'd840057102), 
      .b1 (18'sd466), 
      .b2 (18'sd0), 
      .b3 (-18'sd466), 
@@ -1671,11 +1694,11 @@ IIR2_18bit_fixed filter30_RIGHT(
 //Filter30 Left 
 //Filter30: frequency=3129.456570 
 //Filter30: BW=0.035002 
-//Filter30: shifted freq=3129.456570 
+//Filter30: shifted freq=9388.369711 
 IIR2_18bit_fixed filter30_LEFT( 
      .audio_out (left_filter_output30), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd280019034), 
+     .freq_sw (32'd840057102), 
      .b1 (18'sd466), 
      .b2 (18'sd0), 
      .b3 (-18'sd466), 
@@ -1690,11 +1713,11 @@ IIR2_18bit_fixed filter30_LEFT(
 //Filter31 Right 
 //Filter31: frequency=3310.933394 
 //Filter31: BW=0.035002 
-//Filter31: shifted freq=3310.933394 
+//Filter31: shifted freq=9932.800182 
 IIR2_18bit_fixed filter31_RIGHT( 
      .audio_out (right_filter_output31), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd296257305), 
+     .freq_sw (32'd888771915), 
      .b1 (18'sd493), 
      .b2 (18'sd0), 
      .b3 (-18'sd493), 
@@ -1709,11 +1732,11 @@ IIR2_18bit_fixed filter31_RIGHT(
 //Filter31 Left 
 //Filter31: frequency=3310.933394 
 //Filter31: BW=0.035002 
-//Filter31: shifted freq=3310.933394 
+//Filter31: shifted freq=9932.800182 
 IIR2_18bit_fixed filter31_LEFT( 
      .audio_out (left_filter_output31), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd296257305), 
+     .freq_sw (32'd888771915), 
      .b1 (18'sd493), 
      .b2 (18'sd0), 
      .b3 (-18'sd493), 
@@ -1728,11 +1751,11 @@ IIR2_18bit_fixed filter31_LEFT(
 //Filter32 Right 
 //Filter32: frequency=3501.010351 
 //Filter32: BW=0.035001 
-//Filter32: shifted freq=3501.010351 
+//Filter32: shifted freq=10503.031052 
 IIR2_18bit_fixed filter32_RIGHT( 
      .audio_out (right_filter_output32), 
      .audio_in (right_audio_input), 
-     .freq_sw (32'd313265103), 
+     .freq_sw (32'd939795310), 
      .b1 (18'sd521), 
      .b2 (18'sd0), 
      .b3 (-18'sd521), 
@@ -1747,11 +1770,11 @@ IIR2_18bit_fixed filter32_RIGHT(
 //Filter32 Left 
 //Filter32: frequency=3501.010351 
 //Filter32: BW=0.035001 
-//Filter32: shifted freq=3501.010351 
+//Filter32: shifted freq=10503.031052 
 IIR2_18bit_fixed filter32_LEFT( 
      .audio_out (left_filter_output32), 
      .audio_in (left_audio_input), 
-     .freq_sw (32'd313265103), 
+     .freq_sw (32'd939795310), 
      .b1 (18'sd521), 
      .b2 (18'sd0), 
      .b3 (-18'sd521), 
@@ -1761,12 +1784,9 @@ IIR2_18bit_fixed filter32_LEFT(
      .audio_input_ready(audio_input_ready), 
      .reset(reset) 
 ) ; //end filter 
+
  
-*/ 
- 
- 
- 
- 
+ */
  
 // ===============================================
 // === Video SRAM bus master state machine ============
@@ -2539,7 +2559,7 @@ begin
 					voice_low_new <= voice_low_old;
 					debug <= 0;
 					state <= 5'd1 ; 
-					audio_out <= (modulated_voice <<< 4); 
+					audio_out <= (modulated_voice >>> 5); 
 				end
 			end
 			
