@@ -371,6 +371,27 @@ assign HEX2 = 7'b1111111;
 assign HEX1 = 7'b1111111;
 assign HEX0 = 7'b1111111;
 
+
+wire [31:0] vga_out_base_address = 32'h0000_0000;  // vga base addr
+
+//Data to be written to VGA
+reg   [7:0] vga_sram_writedata;
+
+//Address to write to
+reg  [31:0] vga_sram_address; 
+
+//Should VGA be written to?
+reg         vga_sram_write;
+
+wire vga_sram_clken = 1'b1;
+wire vga_sram_chipselect = 1'b1;
+reg [3:0] vga_state;
+
+reg [9:0] vga_x_cood, vga_y_cood;
+
+reg [9:0] vga_y_audio_center = 10'd120; 
+reg [9:0] vga_y_spect_center = 10'd360; 
+
 //=======================================================
 // Audio controller for AVALON bus-master
 //=======================================================
@@ -403,6 +424,7 @@ wire bus_ack  ;       //  Avalon bus raises this when done
 wire [31:0] bus_read_data ; // data from Avalon bus
 reg [30:0] timer ;
 reg [3:0] state ;
+
 wire state_clock ;
 wire reset;
 
@@ -419,9 +441,24 @@ reg audio_input_ready ;
 wire [15:0] right_audio_output, left_audio_output ;
 
 // For audio loopback, or filtering
-assign right_audio_output = SW[1]? right_filter_output : right_audio_input ;
-assign left_audio_output = SW[0]? left_filter_output : left_audio_input ;
-
+//wire [15:0] debug_right, debug_left;
+assign right_audio_output = SW[9] ? debug_right1 :
+									 SW[8] ? debug_right2 :	
+									 SW[7] ? debug_right3 :
+									 SW[6] ? debug_right4 :
+									 SW[5] ? debug_right5 : 
+									 SW[4] ? right_filter_output3:
+									 SW[2] ? sine_out     : 
+									 SW[1] ? right_filter_output : right_audio_input ;
+									 
+assign left_audio_output = SW[9] ? debug_left1 :
+									SW[8] ? debug_left2 :	
+									SW[7] ? debug_left3 :
+									SW[6] ? debug_left4 :
+									SW[5] ? debug_left5 : 
+									SW[4] ? left_filter_output3:
+								   SW[2] ? sine_out     : 
+									SW[1] ? left_filter_output : left_audio_input ;
 // DDS update signal for testing
 reg [31:0] dds_accum ;
 // DDS LUT
@@ -442,6 +479,13 @@ assign GPIO_0[0] = bus_write ;
 assign GPIO_0[1] = bus_read ;
 assign GPIO_0[2] = bus_ack ;
 assign GPIO_0[3] = audio_input_ready ;
+assign GPIO_0[4] = sine_out;
+
+
+assign GPIO_0[5] = right_filter_output3;
+assign GPIO_0[7] = left_filter_output3;
+
+
 
 // ======================================================
 // === Filters ==========================================
@@ -468,9 +512,6 @@ assign left_filter_output =
  + left_filter_output25 + left_filter_output26 + left_filter_output27 + left_filter_output28                               
  + left_filter_output29 + left_filter_output30 + left_filter_output31 + left_filter_output32; 
 
-
-
- 
 wire [15:0]    right_filter_output , left_filter_output, 
                right_filter_output1 , left_filter_output1, 
                right_filter_output2 , left_filter_output2, 
@@ -511,7 +552,6 @@ wire [15:0]    right_filter_output , left_filter_output,
 IIR2_18bit_fixed filter1_RIGHT( 
      .audio_out (right_filter_output1), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd45), 
      .b2 (18'sd0), 
      .b3 (-18'sd45), 
@@ -529,7 +569,6 @@ IIR2_18bit_fixed filter1_RIGHT(
 IIR2_18bit_fixed filter1_LEFT( 
      .audio_out (left_filter_output1), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd45), 
      .b2 (18'sd0), 
      .b3 (-18'sd45), 
@@ -547,7 +586,6 @@ IIR2_18bit_fixed filter1_LEFT(
 IIR2_18bit_fixed filter2_RIGHT( 
      .audio_out (right_filter_output2), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd52), 
      .b2 (18'sd0), 
      .b3 (-18'sd52), 
@@ -565,7 +603,6 @@ IIR2_18bit_fixed filter2_RIGHT(
 IIR2_18bit_fixed filter2_LEFT( 
      .audio_out (left_filter_output2), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd52), 
      .b2 (18'sd0), 
      .b3 (-18'sd52), 
@@ -576,6 +613,11 @@ IIR2_18bit_fixed filter2_LEFT(
      .reset(reset) 
 ) ; //end filter 
  
+ wire signed[15:0] debug_right1, debug_left1;
+ wire signed[15:0] debug_right2, debug_left2;
+ wire signed[15:0] debug_right3, debug_left3;
+ wire signed[15:0] debug_right4, debug_left4;
+ wire signed[15:0] debug_right5, debug_left5;
  
 //Filter 3 Right 
 //Filter 3: frequency=0.016542 
@@ -583,7 +625,7 @@ IIR2_18bit_fixed filter2_LEFT(
 IIR2_18bit_fixed filter3_RIGHT( 
      .audio_out (right_filter_output3), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
+	  .freq_sw(SW[9:0]),
      .b1 (18'sd59), 
      .b2 (18'sd0), 
      .b3 (-18'sd59), 
@@ -591,17 +633,22 @@ IIR2_18bit_fixed filter3_RIGHT(
      .a3 (-18'sd65416), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset),
+	  .voice_in_abs( debug_left1),
+	  .voice_in(debug_left2),
+	  .wave(debug_left3),
+	  .modulated_voice(debug_left4),
+	  .f1_mac_new(debug_left5)
 ) ; //end filter 
  
- 
+
 //Filter 3 Left 
 //Filter 3: frequency=0.016542 
 //Filter 3: BW=0.035013 
 IIR2_18bit_fixed filter3_LEFT( 
      .audio_out (left_filter_output3), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
+	  .freq_sw(SW[9:0]),
      .b1 (18'sd59), 
      .b2 (18'sd0), 
      .b3 (-18'sd59), 
@@ -609,7 +656,12 @@ IIR2_18bit_fixed filter3_LEFT(
      .a3 (-18'sd65416), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset),
+	  .voice_in_abs( debug_right1),
+	  .voice_in(debug_right2),
+	  .wave(debug_right3),
+	  .modulated_voice(debug_right4),
+	  .f1_mac_new(debug_right5) 
 ) ; //end filter 
  
  
@@ -619,7 +671,6 @@ IIR2_18bit_fixed filter3_LEFT(
 IIR2_18bit_fixed filter4_RIGHT( 
      .audio_out (right_filter_output4), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd67), 
      .b2 (18'sd0), 
      .b3 (-18'sd67), 
@@ -637,7 +688,6 @@ IIR2_18bit_fixed filter4_RIGHT(
 IIR2_18bit_fixed filter4_LEFT( 
      .audio_out (left_filter_output4), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd67), 
      .b2 (18'sd0), 
      .b3 (-18'sd67), 
@@ -655,7 +705,6 @@ IIR2_18bit_fixed filter4_LEFT(
 IIR2_18bit_fixed filter5_RIGHT( 
      .audio_out (right_filter_output5), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd75), 
      .b2 (18'sd0), 
      .b3 (-18'sd75), 
@@ -673,7 +722,6 @@ IIR2_18bit_fixed filter5_RIGHT(
 IIR2_18bit_fixed filter5_LEFT( 
      .audio_out (left_filter_output5), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd75), 
      .b2 (18'sd0), 
      .b3 (-18'sd75), 
@@ -691,7 +739,6 @@ IIR2_18bit_fixed filter5_LEFT(
 IIR2_18bit_fixed filter6_RIGHT( 
      .audio_out (right_filter_output6), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd84), 
      .b2 (18'sd0), 
      .b3 (-18'sd84), 
@@ -709,7 +756,6 @@ IIR2_18bit_fixed filter6_RIGHT(
 IIR2_18bit_fixed filter6_LEFT( 
      .audio_out (left_filter_output6), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd84), 
      .b2 (18'sd0), 
      .b3 (-18'sd84), 
@@ -727,7 +773,6 @@ IIR2_18bit_fixed filter6_LEFT(
 IIR2_18bit_fixed filter7_RIGHT( 
      .audio_out (right_filter_output7), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd93), 
      .b2 (18'sd0), 
      .b3 (-18'sd93), 
@@ -745,7 +790,6 @@ IIR2_18bit_fixed filter7_RIGHT(
 IIR2_18bit_fixed filter7_LEFT( 
      .audio_out (left_filter_output7), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd93), 
      .b2 (18'sd0), 
      .b3 (-18'sd93), 
@@ -763,7 +807,6 @@ IIR2_18bit_fixed filter7_LEFT(
 IIR2_18bit_fixed filter8_RIGHT( 
      .audio_out (right_filter_output8), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd102), 
      .b2 (18'sd0), 
      .b3 (-18'sd102), 
@@ -781,7 +824,6 @@ IIR2_18bit_fixed filter8_RIGHT(
 IIR2_18bit_fixed filter8_LEFT( 
      .audio_out (left_filter_output8), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd102), 
      .b2 (18'sd0), 
      .b3 (-18'sd102), 
@@ -799,7 +841,6 @@ IIR2_18bit_fixed filter8_LEFT(
 IIR2_18bit_fixed filter9_RIGHT( 
      .audio_out (right_filter_output9), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd112), 
      .b2 (18'sd0), 
      .b3 (-18'sd112), 
@@ -817,7 +858,6 @@ IIR2_18bit_fixed filter9_RIGHT(
 IIR2_18bit_fixed filter9_LEFT( 
      .audio_out (left_filter_output9), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd112), 
      .b2 (18'sd0), 
      .b3 (-18'sd112), 
@@ -835,7 +875,6 @@ IIR2_18bit_fixed filter9_LEFT(
 IIR2_18bit_fixed filter10_RIGHT( 
      .audio_out (right_filter_output10), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd122), 
      .b2 (18'sd0), 
      .b3 (-18'sd122), 
@@ -853,7 +892,6 @@ IIR2_18bit_fixed filter10_RIGHT(
 IIR2_18bit_fixed filter10_LEFT( 
      .audio_out (left_filter_output10), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd122), 
      .b2 (18'sd0), 
      .b3 (-18'sd122), 
@@ -871,7 +909,6 @@ IIR2_18bit_fixed filter10_LEFT(
 IIR2_18bit_fixed filter11_RIGHT( 
      .audio_out (right_filter_output11), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd133), 
      .b2 (18'sd0), 
      .b3 (-18'sd133), 
@@ -889,7 +926,6 @@ IIR2_18bit_fixed filter11_RIGHT(
 IIR2_18bit_fixed filter11_LEFT( 
      .audio_out (left_filter_output11), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd133), 
      .b2 (18'sd0), 
      .b3 (-18'sd133), 
@@ -907,7 +943,6 @@ IIR2_18bit_fixed filter11_LEFT(
 IIR2_18bit_fixed filter12_RIGHT( 
      .audio_out (right_filter_output12), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd144), 
      .b2 (18'sd0), 
      .b3 (-18'sd144), 
@@ -925,7 +960,6 @@ IIR2_18bit_fixed filter12_RIGHT(
 IIR2_18bit_fixed filter12_LEFT( 
      .audio_out (left_filter_output12), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd144), 
      .b2 (18'sd0), 
      .b3 (-18'sd144), 
@@ -943,7 +977,6 @@ IIR2_18bit_fixed filter12_LEFT(
 IIR2_18bit_fixed filter13_RIGHT( 
      .audio_out (right_filter_output13), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd156), 
      .b2 (18'sd0), 
      .b3 (-18'sd156), 
@@ -961,7 +994,6 @@ IIR2_18bit_fixed filter13_RIGHT(
 IIR2_18bit_fixed filter13_LEFT( 
      .audio_out (left_filter_output13), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd156), 
      .b2 (18'sd0), 
      .b3 (-18'sd156), 
@@ -979,7 +1011,6 @@ IIR2_18bit_fixed filter13_LEFT(
 IIR2_18bit_fixed filter14_RIGHT( 
      .audio_out (right_filter_output14), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd168), 
      .b2 (18'sd0), 
      .b3 (-18'sd168), 
@@ -997,7 +1028,6 @@ IIR2_18bit_fixed filter14_RIGHT(
 IIR2_18bit_fixed filter14_LEFT( 
      .audio_out (left_filter_output14), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd168), 
      .b2 (18'sd0), 
      .b3 (-18'sd168), 
@@ -1015,7 +1045,6 @@ IIR2_18bit_fixed filter14_LEFT(
 IIR2_18bit_fixed filter15_RIGHT( 
      .audio_out (right_filter_output15), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd181), 
      .b2 (18'sd0), 
      .b3 (-18'sd181), 
@@ -1033,7 +1062,6 @@ IIR2_18bit_fixed filter15_RIGHT(
 IIR2_18bit_fixed filter15_LEFT( 
      .audio_out (left_filter_output15), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd181), 
      .b2 (18'sd0), 
      .b3 (-18'sd181), 
@@ -1051,7 +1079,6 @@ IIR2_18bit_fixed filter15_LEFT(
 IIR2_18bit_fixed filter16_RIGHT( 
      .audio_out (right_filter_output16), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd195), 
      .b2 (18'sd0), 
      .b3 (-18'sd195), 
@@ -1069,7 +1096,6 @@ IIR2_18bit_fixed filter16_RIGHT(
 IIR2_18bit_fixed filter16_LEFT( 
      .audio_out (left_filter_output16), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd195), 
      .b2 (18'sd0), 
      .b3 (-18'sd195), 
@@ -1087,7 +1113,6 @@ IIR2_18bit_fixed filter16_LEFT(
 IIR2_18bit_fixed filter17_RIGHT( 
      .audio_out (right_filter_output17), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd209), 
      .b2 (18'sd0), 
      .b3 (-18'sd209), 
@@ -1105,7 +1130,6 @@ IIR2_18bit_fixed filter17_RIGHT(
 IIR2_18bit_fixed filter17_LEFT( 
      .audio_out (left_filter_output17), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd209), 
      .b2 (18'sd0), 
      .b3 (-18'sd209), 
@@ -1123,7 +1147,6 @@ IIR2_18bit_fixed filter17_LEFT(
 IIR2_18bit_fixed filter18_RIGHT( 
      .audio_out (right_filter_output18), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd223), 
      .b2 (18'sd0), 
      .b3 (-18'sd223), 
@@ -1141,7 +1164,6 @@ IIR2_18bit_fixed filter18_RIGHT(
 IIR2_18bit_fixed filter18_LEFT( 
      .audio_out (left_filter_output18), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd223), 
      .b2 (18'sd0), 
      .b3 (-18'sd223), 
@@ -1159,7 +1181,6 @@ IIR2_18bit_fixed filter18_LEFT(
 IIR2_18bit_fixed filter19_RIGHT( 
      .audio_out (right_filter_output19), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd239), 
      .b2 (18'sd0), 
      .b3 (-18'sd239), 
@@ -1177,7 +1198,6 @@ IIR2_18bit_fixed filter19_RIGHT(
 IIR2_18bit_fixed filter19_LEFT( 
      .audio_out (left_filter_output19), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd239), 
      .b2 (18'sd0), 
      .b3 (-18'sd239), 
@@ -1195,7 +1215,6 @@ IIR2_18bit_fixed filter19_LEFT(
 IIR2_18bit_fixed filter20_RIGHT( 
      .audio_out (right_filter_output20), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd255), 
      .b2 (18'sd0), 
      .b3 (-18'sd255), 
@@ -1213,7 +1232,6 @@ IIR2_18bit_fixed filter20_RIGHT(
 IIR2_18bit_fixed filter20_LEFT( 
      .audio_out (left_filter_output20), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd255), 
      .b2 (18'sd0), 
      .b3 (-18'sd255), 
@@ -1231,7 +1249,6 @@ IIR2_18bit_fixed filter20_LEFT(
 IIR2_18bit_fixed filter21_RIGHT( 
      .audio_out (right_filter_output21), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd272), 
      .b2 (18'sd0), 
      .b3 (-18'sd272), 
@@ -1249,7 +1266,6 @@ IIR2_18bit_fixed filter21_RIGHT(
 IIR2_18bit_fixed filter21_LEFT( 
      .audio_out (left_filter_output21), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd272), 
      .b2 (18'sd0), 
      .b3 (-18'sd272), 
@@ -1267,7 +1283,6 @@ IIR2_18bit_fixed filter21_LEFT(
 IIR2_18bit_fixed filter22_RIGHT( 
      .audio_out (right_filter_output22), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd290), 
      .b2 (18'sd0), 
      .b3 (-18'sd290), 
@@ -1285,7 +1300,6 @@ IIR2_18bit_fixed filter22_RIGHT(
 IIR2_18bit_fixed filter22_LEFT( 
      .audio_out (left_filter_output22), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd290), 
      .b2 (18'sd0), 
      .b3 (-18'sd290), 
@@ -1303,7 +1317,6 @@ IIR2_18bit_fixed filter22_LEFT(
 IIR2_18bit_fixed filter23_RIGHT( 
      .audio_out (right_filter_output23), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd309), 
      .b2 (18'sd0), 
      .b3 (-18'sd309), 
@@ -1321,7 +1334,6 @@ IIR2_18bit_fixed filter23_RIGHT(
 IIR2_18bit_fixed filter23_LEFT( 
      .audio_out (left_filter_output23), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd309), 
      .b2 (18'sd0), 
      .b3 (-18'sd309), 
@@ -1339,7 +1351,6 @@ IIR2_18bit_fixed filter23_LEFT(
 IIR2_18bit_fixed filter24_RIGHT( 
      .audio_out (right_filter_output24), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd328), 
      .b2 (18'sd0), 
      .b3 (-18'sd328), 
@@ -1357,7 +1368,6 @@ IIR2_18bit_fixed filter24_RIGHT(
 IIR2_18bit_fixed filter24_LEFT( 
      .audio_out (left_filter_output24), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd328), 
      .b2 (18'sd0), 
      .b3 (-18'sd328), 
@@ -1375,7 +1385,6 @@ IIR2_18bit_fixed filter24_LEFT(
 IIR2_18bit_fixed filter25_RIGHT( 
      .audio_out (right_filter_output25), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd349), 
      .b2 (18'sd0), 
      .b3 (-18'sd349), 
@@ -1393,7 +1402,6 @@ IIR2_18bit_fixed filter25_RIGHT(
 IIR2_18bit_fixed filter25_LEFT( 
      .audio_out (left_filter_output25), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd349), 
      .b2 (18'sd0), 
      .b3 (-18'sd349), 
@@ -1411,7 +1419,6 @@ IIR2_18bit_fixed filter25_LEFT(
 IIR2_18bit_fixed filter26_RIGHT( 
      .audio_out (right_filter_output26), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd370), 
      .b2 (18'sd0), 
      .b3 (-18'sd370), 
@@ -1429,7 +1436,6 @@ IIR2_18bit_fixed filter26_RIGHT(
 IIR2_18bit_fixed filter26_LEFT( 
      .audio_out (left_filter_output26), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd370), 
      .b2 (18'sd0), 
      .b3 (-18'sd370), 
@@ -1447,7 +1453,6 @@ IIR2_18bit_fixed filter26_LEFT(
 IIR2_18bit_fixed filter27_RIGHT( 
      .audio_out (right_filter_output27), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd392), 
      .b2 (18'sd0), 
      .b3 (-18'sd392), 
@@ -1465,7 +1470,6 @@ IIR2_18bit_fixed filter27_RIGHT(
 IIR2_18bit_fixed filter27_LEFT( 
      .audio_out (left_filter_output27), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd392), 
      .b2 (18'sd0), 
      .b3 (-18'sd392), 
@@ -1483,7 +1487,6 @@ IIR2_18bit_fixed filter27_LEFT(
 IIR2_18bit_fixed filter28_RIGHT( 
      .audio_out (right_filter_output28), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd416), 
      .b2 (18'sd0), 
      .b3 (-18'sd416), 
@@ -1501,7 +1504,6 @@ IIR2_18bit_fixed filter28_RIGHT(
 IIR2_18bit_fixed filter28_LEFT( 
      .audio_out (left_filter_output28), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd416), 
      .b2 (18'sd0), 
      .b3 (-18'sd416), 
@@ -1519,7 +1521,6 @@ IIR2_18bit_fixed filter28_LEFT(
 IIR2_18bit_fixed filter29_RIGHT( 
      .audio_out (right_filter_output29), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd440), 
      .b2 (18'sd0), 
      .b3 (-18'sd440), 
@@ -1537,7 +1538,6 @@ IIR2_18bit_fixed filter29_RIGHT(
 IIR2_18bit_fixed filter29_LEFT( 
      .audio_out (left_filter_output29), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd440), 
      .b2 (18'sd0), 
      .b3 (-18'sd440), 
@@ -1555,7 +1555,6 @@ IIR2_18bit_fixed filter29_LEFT(
 IIR2_18bit_fixed filter30_RIGHT( 
      .audio_out (right_filter_output30), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd466), 
      .b2 (18'sd0), 
      .b3 (-18'sd466), 
@@ -1573,7 +1572,6 @@ IIR2_18bit_fixed filter30_RIGHT(
 IIR2_18bit_fixed filter30_LEFT( 
      .audio_out (left_filter_output30), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd466), 
      .b2 (18'sd0), 
      .b3 (-18'sd466), 
@@ -1591,7 +1589,6 @@ IIR2_18bit_fixed filter30_LEFT(
 IIR2_18bit_fixed filter31_RIGHT( 
      .audio_out (right_filter_output31), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd493), 
      .b2 (18'sd0), 
      .b3 (-18'sd493), 
@@ -1609,7 +1606,6 @@ IIR2_18bit_fixed filter31_RIGHT(
 IIR2_18bit_fixed filter31_LEFT( 
      .audio_out (left_filter_output31), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd493), 
      .b2 (18'sd0), 
      .b3 (-18'sd493), 
@@ -1627,7 +1623,6 @@ IIR2_18bit_fixed filter31_LEFT(
 IIR2_18bit_fixed filter32_RIGHT( 
      .audio_out (right_filter_output32), 
      .audio_in (right_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd521), 
      .b2 (18'sd0), 
      .b3 (-18'sd521), 
@@ -1645,7 +1640,6 @@ IIR2_18bit_fixed filter32_RIGHT(
 IIR2_18bit_fixed filter32_LEFT( 
      .audio_out (left_filter_output32), 
      .audio_in (left_audio_input), 
-     .wave (sine_out), 
      .b1 (18'sd521), 
      .b2 (18'sd0), 
      .b3 (-18'sd521), 
@@ -1657,13 +1651,84 @@ IIR2_18bit_fixed filter32_LEFT(
 ) ; //end filter 
  
 
+ 
+ 
+// ===============================================
+// === Video SRAM bus master state machine ============
+// ===============================================
+	// writes to VGA, if data
+	
+reg neg_flag;
+reg [15:0] data;
+always @(posedge CLOCK_50) begin //CLOCK_50
+	// reset state machine and read/write controls
+	if (reset) begin
+		vga_state <=4'd0;
+		vga_x_cood <=10'd0;
+		vga_y_cood <=10'd120;
+		vga_sram_write <=1'd0;
+		vga_sram_writedata <= 8'd255;
+		neg_flag <= 1'b0;
+		data <= 16'd0;
+	end
+	
+	//get sign of output
+	if (vga_state == 4'd0) begin
 
+		vga_sram_write <= 1'b0;
+		data <= bus_read_data;	
+		neg_flag <= left_filter_output[15];
+		vga_state <= 4'd1;
+	
+	end
+	
+	//calculate y coord
+	if (vga_state == 4'd1) begin
+		vga_sram_write <= 1'b0;
+		
+		if (neg_flag) begin
+			vga_y_cood <= vga_y_audio_center + data>>10 ;
+		end		
+		else begin
+			vga_y_cood <= vga_y_audio_center - data>>10;
+		end
+		vga_state <= 4'd2;
+	end
+	
 
-
-
-
-
-
+	//Write to VGA
+	if (vga_state == 4'd2) begin
+		vga_sram_writedata <= 8'd255;
+		vga_sram_write <= 1'b1;
+		vga_sram_address <= vga_out_base_address + {22'b0, vga_x_cood} + ({22'b0, vga_y_audio_center}*640);
+		vga_state <= 4'd3;
+	
+	end
+	
+	if (vga_state == 4'd3) begin
+		vga_sram_writedata <= 8'd255;
+		vga_sram_write <= 1'b1;
+		vga_state <=4'd4;
+	
+	
+	end
+	
+	//Go to next column (go back to left if column is exceeded)
+	if (vga_state == 4'd4) begin
+		vga_sram_write <= 1'b0;
+		if (vga_x_cood >= 10'd640) begin
+			vga_x_cood <= 10'd0;
+		end
+		else begin
+			vga_x_cood <= vga_x_cood + 10'd1;
+		end
+		data <= 16'd0;
+		vga_state <= 4'd0;
+	
+	end
+	
+	
+end // always @(posedge state_clock)
 
 
 
@@ -1796,8 +1861,8 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 	// You MUST do this check
 	if (state==4'd9 && bus_ack==1) begin
 		state <= 4'd10 ; // include right channel
-		left_audio_input <= ((bus_read_data < 0) && SW[2]) ? 
-									(0 - bus_read_data) : bus_read_data;
+		left_audio_input <= bus_read_data; //((bus_read_data < 0) && SW[2]) ? 
+									//(0 - bus_read_data) : bus_read_data;
 		bus_read <= 0;
 	end
 	
@@ -1816,8 +1881,8 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 	// You MUST do this check
 	if (state==4'd11 && bus_ack==1) begin
 		state <= 4'd12 ; // back to beginning
-		right_audio_input <= ((bus_read_data < 0) && SW[2]) ? 
-									(0 - bus_read_data) : bus_read_data;
+		right_audio_input <= bus_read_data;//((bus_read_data < 0) && SW[2]) ? 
+									//(0 - bus_read_data) : bus_read_data;
 		// set the data-ready strobe
 		audio_input_ready <= 1'b1;
 		bus_read <= 0;
@@ -1835,6 +1900,12 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 	end
 	
 end // always @(posedge state_clock)
+ 
+ 
+
+
+
+
 
 
 //=======================================================
@@ -1897,6 +1968,20 @@ Computer_System The_System (
 	.sdram_dqm									({DRAM_UDQM,DRAM_LDQM}),
 	.sdram_ras_n								(DRAM_RAS_N),
 	.sdram_we_n									(DRAM_WE_N),
+	
+	
+	//  sram to video
+	.onchip_vga_buffer_s1_address    (vga_sram_address),    
+	.onchip_vga_buffer_s1_clken      (vga_sram_clken),      
+	.onchip_vga_buffer_s1_chipselect (vga_sram_chipselect), 
+	.onchip_vga_buffer_s1_write      (vga_sram_write),      
+	.onchip_vga_buffer_s1_readdata   (),   // never read from vga here
+	.onchip_vga_buffer_s1_writedata  (vga_sram_writedata),   
+	
+	// 50 MHz clock bridge
+	.clock_bridge_0_in_clk_clk            (CLOCK_50), //(CLOCK_50), 
+	
+	
 	
 	////////////////////////////////////
 	// HPS Side
@@ -2030,10 +2115,11 @@ endmodule
 /// Second order IIR filter ///////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 module IIR2_18bit_fixed (audio_out, audio_in, 
-			wave,
+			freq_sw,
 			b1, b2, b3, 
 			a2, a3, 
-			state_clk, audio_input_ready, reset) ;
+			state_clk, audio_input_ready, reset,
+			voice_in_abs, voice_in, wave,  modulated_voice, f1_mac_new) ;
 // The filter is a "Direct Form II Transposed"
 // 
 //    a(1)*y(n) = b(1)*x(n) + b(2)*x(n-1) + ... + b(nb+1)*x(n-nb)
@@ -2048,14 +2134,15 @@ output reg signed [15:0] audio_out ;
 input wire signed [15:0] audio_in ;
 
 // sign wave to modulate by
-input wire signed [17:0] wave;
+input wire signed [9:0] freq_sw;
 
 // filter coefficients
 input wire signed [17:0] b1, b2, b3, a2, a3 ;
 input wire state_clk, audio_input_ready, reset ;
 
 /// filter vars //////////////////////////////////////////////////
-wire signed [17:0] f1_mac_new, f1_coeff_x_value ;
+output wire signed [17:0] f1_mac_new;
+wire signed [17:0] f1_coeff_x_value ;
 reg signed [17:0] f1_coeff, f1_mac_old, f1_value ;
 
 // input to filter
@@ -2073,12 +2160,17 @@ signed_mult f1_c_x_v (f1_coeff_x_value, f1_coeff, f1_value);
 assign f1_mac_new = f1_mac_old + f1_coeff_x_value ;
 
 // modulate by sine wave
-reg signed [17:0] voice_in;
-wire signed [17:0] modulated_voice;
-//signed_mult (modulated_voice, voice_in, wave);
-assign modulated_voice = voice_in;
+output reg signed [17:0] voice_in_abs;
+output reg signed [17:0] voice_in;
+output wire signed [17:0] modulated_voice;
+output wire signed [15:0] wave;
+reg [31:0] dds_accum ;
+sync_rom sineTable(state_clk, dds_accum[31:24], wave);
+signed_mult mod_mult(modulated_voice, voice_in, wave);
+//assign modulated_voice = voice_in;
 
-
+wire log_alpha = 9;
+reg signed [17:0] Ai;
 
 // state variable 
 reg [3:0] state ;
@@ -2171,34 +2263,61 @@ begin
 				state <= 4'd15;
 			end	
 			
-			15:
+			15: // take absolute value
 			begin
 				// wait for the audio_input_ready 
-				//if (audio_input_ready)
-				//begin
-					state <= 4'd16 ; 
-					
-					// take absolute value of audio out =======================
-					/*if ( (f1_mac_new < 18'd0))
+				if (freq_sw[3])
+				begin
+					if (audio_input_ready)
 					begin
-						voice_in <= 18'd0 - f1_mac_new;
+						state <= 4'd1 ; 
+						audio_out <= f1_mac_new ;
 					end
-					else
-					begin*/
-					//	voice_in <= f1_mac_new ; //f1_y_n1[17:2] ;	
-					//end
-					// ========================================================
 					
+			   end
+				
+				else
+				begin
+					if (audio_input_ready)
+					begin
+						state <= 4'd16 ; 
+						// take absolute value of audio out =======================
+						if ( (f1_mac_new < 18'd0))
+						begin
+							voice_in_abs <= 18'd0 - f1_mac_new;
+						end
+						else
+						begin
+							voice_in_abs <= f1_mac_new ; //f1_y_n1[17:2] ;	
+						end
+					   // ========================================================
+					end
+				end
 				//end
 			end
 			
-			16:
+			16: // LPF-power 
+			begin
+				
+				if (audio_input_ready) 
+				begin
+					state <= 4'd17 ; 
+					dds_accum <= dds_accum + {freq_sw, 16'b0} ;
+					voice_in <= ((voice_in_abs - Ai) <<< log_alpha) + Ai;
+					Ai <= ((voice_in_abs - Ai) <<< log_alpha) + Ai;
+				end
+
+			end
+			
+			
+			
+			17: // modulate with new sine wave
 			begin
 				// wait for the audio_input_ready 
 				if (audio_input_ready)
 				begin
 					state <= 4'd1 ; 
-					audio_out <= f1_mac_new ; 
+					audio_out <= modulated_voice ; 
 				end
 			end
 			
@@ -2206,7 +2325,8 @@ begin
 			default:
 			begin
 				// default state is end state
-				state <= 4'd16 ;
+				//state <= 4'd15 ;
+				state <= 4'd17 ;
 			end
 		endcase
 	end
