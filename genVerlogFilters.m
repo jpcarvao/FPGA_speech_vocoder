@@ -2,16 +2,18 @@ close all
 clear all
 clc
 
+shift_freq = 1;
+
 tot_filter = 32;
 
 
-fprintf( 'wire [15:0]    right_filter_output , left_filter_output' )
-
-for i = 1:tot_filter
-    fprintf(', \n               right_filter_output%1d , left_filter_output%1d',i,i) 
-end
-
-fprintf('; \n')
+% fprintf( 'wire [15:0]    right_filter_output , left_filter_output' )
+% 
+% for i = 1:tot_filter
+%     fprintf(', \n               right_filter_output%1d , left_filter_output%1d',i,i) 
+% end
+% 
+% fprintf('; \n')
 				
 
 %  -- bandpass
@@ -38,7 +40,7 @@ for i=1:length(F)
     %i
     [b{i}, a{i}] = butter(1,[F(i)-F(i)*(BW(i)/2), F(i)+F(i)*(BW(i)/2)] );
     
-    genFilter(F_reg(i), BW_reg(i),i)
+    genFilter(F_reg(i), BW_reg(i), F_reg(i)*shift_freq ,i)
     
     
 %     F_set = [F_set, F(i)-F(i)*(BW(i)/2), F(i)+F(i)*(BW(i)/2)];
