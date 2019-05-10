@@ -364,12 +364,20 @@ wire			[15: 0]	hex3_hex0;
 //assign HEX1 = ~hex3_hex0[14: 8];
 //assign HEX2 = ~hex3_hex0[22:16];
 //assign HEX3 = ~hex3_hex0[30:24];
-assign HEX4 = 7'b1111111;
+/*assign HEX4 = 7'b1111111;
 assign HEX5 = 7'b1111111;
 assign HEX3 = 7'b1111111;
 assign HEX2 = 7'b1111111;
 assign HEX1 = 7'b1111111;
-assign HEX0 = 7'b1111111;
+assign HEX0 = 7'b1111111;*/
+
+
+HexDigit Digit0(HEX0, {1'd0,SW[3:1]});
+assign HEX4 = 7'b1111111;
+assign HEX3 = 7'b1111111;
+assign HEX2 = 7'b1111111;
+assign HEX1 = 7'b1111111;
+HexDigit Digit5(HEX5, SW[9:6]);
 
 
 wire [31:0] vga_out_base_address = 32'h0000_0000;  // vga base addr
@@ -591,7 +599,7 @@ IIR2_18bit_fixed filter1_RIGHT(
      .audio_out (right_filter_output1), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd26842805 <<< pitch_shift), 
-     .log_alpha(base_alpha+5'd4), 
+     .log_alpha(base_alpha+5'd5), 
      .b1 (18'sd45), 
      .b2 (18'sd0), 
      .b3 (-18'sd45), 
@@ -612,7 +620,7 @@ IIR2_18bit_fixed filter1_LEFT(
      .audio_out (left_filter_output1), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd26842805 <<< pitch_shift), 
-     .log_alpha(base_alpha+5'd4), 
+     .log_alpha(base_alpha+5'd5), 
      .b1 (18'sd45), 
      .b2 (18'sd0), 
      .b3 (-18'sd45), 
@@ -633,7 +641,7 @@ IIR2_18bit_fixed filter2_RIGHT(
      .audio_out (right_filter_output2), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd31083129 <<< pitch_shift), 
-     .log_alpha(base_alpha+5'd3), 
+     .log_alpha(base_alpha+5'd4), 
      .b1 (18'sd52), 
      .b2 (18'sd0), 
      .b3 (-18'sd52), 
@@ -654,7 +662,7 @@ IIR2_18bit_fixed filter2_LEFT(
      .audio_out (left_filter_output2), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd31083129 <<< pitch_shift), 
-     .log_alpha(base_alpha+5'd3), 
+     .log_alpha(base_alpha+5'd4), 
      .b1 (18'sd52), 
      .b2 (18'sd0), 
      .b3 (-18'sd52), 
@@ -675,7 +683,7 @@ IIR2_18bit_fixed filter3_RIGHT(
      .audio_out (right_filter_output3), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd35524401 <<< pitch_shift), 
-     .log_alpha(base_alpha+5'd2), 
+     .log_alpha(base_alpha+5'd4), 
      .b1 (18'sd59), 
      .b2 (18'sd0), 
      .b3 (-18'sd59), 
@@ -696,7 +704,7 @@ IIR2_18bit_fixed filter3_LEFT(
      .audio_out (left_filter_output3), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd35524401 <<< pitch_shift), 
-     .log_alpha(base_alpha+5'd2), 
+     .log_alpha(base_alpha+5'd4), 
      .b1 (18'sd59), 
      .b2 (18'sd0), 
      .b3 (-18'sd59), 
@@ -717,7 +725,7 @@ IIR2_18bit_fixed filter4_RIGHT(
      .audio_out (right_filter_output4), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd40176143 <<< pitch_shift), 
-     .log_alpha(base_alpha+5'd1), 
+     .log_alpha(base_alpha+5'd3), 
      .b1 (18'sd67), 
      .b2 (18'sd0), 
      .b3 (-18'sd67), 
@@ -738,7 +746,7 @@ IIR2_18bit_fixed filter4_LEFT(
      .audio_out (left_filter_output4), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd40176143 <<< pitch_shift), 
-     .log_alpha(base_alpha+5'd1), 
+     .log_alpha(base_alpha+5'd3), 
      .b1 (18'sd67), 
      .b2 (18'sd0), 
      .b3 (-18'sd67), 
@@ -759,7 +767,7 @@ IIR2_18bit_fixed filter5_RIGHT(
      .audio_out (right_filter_output5), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd45048330 <<< pitch_shift), 
-     .log_alpha(base_alpha), 
+     .log_alpha(base_alpha+5'd2), 
      .b1 (18'sd75), 
      .b2 (18'sd0), 
      .b3 (-18'sd75), 
@@ -780,7 +788,7 @@ IIR2_18bit_fixed filter5_LEFT(
      .audio_out (left_filter_output5), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd45048330 <<< pitch_shift), 
-     .log_alpha(base_alpha), 
+     .log_alpha(base_alpha+5'd2), 
      .b1 (18'sd75), 
      .b2 (18'sd0), 
      .b3 (-18'sd75), 
@@ -801,7 +809,7 @@ IIR2_18bit_fixed filter6_RIGHT(
      .audio_out (right_filter_output6), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd50151409 <<< pitch_shift), 
-     .log_alpha(base_alpha), 
+     .log_alpha(base_alpha+5'd1), 
      .b1 (18'sd84), 
      .b2 (18'sd0), 
      .b3 (-18'sd84), 
@@ -822,7 +830,7 @@ IIR2_18bit_fixed filter6_LEFT(
      .audio_out (left_filter_output6), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd50151409 <<< pitch_shift), 
-     .log_alpha(base_alpha), 
+     .log_alpha(base_alpha+5'd1), 
      .b1 (18'sd84), 
      .b2 (18'sd0), 
      .b3 (-18'sd84), 
@@ -1941,10 +1949,11 @@ reg [7:0] count;
 reg [9:0] vga_timer;
 reg [9:0] back_x, back_y;
 wire [10:0] TIME_STOP = 10'd500;
-reg [7:0] spect_data, color;
+reg [17:0] spect_data;
+reg [7:0]color;
 reg [9:0] index;
 
-always @(posedge CLOCK_50) begin //CLOCK_50
+always @(posedge audio_input_ready) begin //CLOCK_50
 	// reset state machine and read/write controls
 	if (reset) begin
 		vga_state <=4'd0;
@@ -1955,7 +1964,7 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 		audio_data <= 10'd0;
 		count <= 8'd0;
 		write_prev <= 1'b0;
-		spect_data <= (right_filter_output1<<<5);
+		spect_data <= (right_filter_output1);
 		index <= 10'd1;
 	end
 
@@ -1966,7 +1975,7 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 
 	//WRITE AUDIO INPUT
 	if (vga_state == 4'd0) begin
-		
+	/*	
 		if ((audio_input_ready) && (timer%TIME_STOP==0))begin
 			vga_sram_write <= 1'b0;
 			audio_data <= bus_read_data;
@@ -1974,8 +1983,11 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 		end
 		else begin
 			vga_state <=4'd0;
-
 		end
+		*/
+		vga_sram_write <= 1'b0;
+		audio_data <= bus_read_data;
+		vga_state <= 4'd1;
 	end
 	
 	//calculate y coord
@@ -1991,13 +2003,11 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 		if (vga_y_cood >= 10'd180) begin
 			vga_y_cood <= vga_y_cood - 10'd120;
 		end
-	
 		vga_state <= 4'd3;
 	end
 
 	//Write to VGA
 	if (vga_state == 4'd3) begin
-
 		vga_sram_writedata <= 8'd255;
 		vga_sram_write <= 1'b1;
 		vga_sram_address <= vga_out_base_address + {22'b0, vga_x_cood} + ({22'b0, vga_y_cood}*640);
@@ -2036,7 +2046,7 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 		vga_sram_writedata <= 8'd0;
 		vga_state <=4'd10;
 		vga_y_cood <=vga_y_spect_top;
-		spect_data <= (right_filter_output1);	
+		spect_data <= (spect_data1_right);	
 			
 	end
 	
@@ -2065,100 +2075,100 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 	if (vga_state == 4'd8) begin
 	
 		if (index == 10'd1) begin
-			spect_data <=  (right_filter_output1);	
+			spect_data <=  (spect_data1_right);	
 		end
 		else if (index == 10'd2) begin
-			spect_data <=  (right_filter_output2);	
+			spect_data <=  (spect_data2_right);	
 		end
 		else if (index == 10'd3) begin
-			spect_data <=  (right_filter_output3);	
+			spect_data <=  (spect_data3_right);	
 		end
 		else if (index == 10'd4) begin
-			spect_data <=  (right_filter_output4);	
+			spect_data <=  (spect_data4_right);	
 		end
 		else if (index == 10'd5) begin
-			spect_data <=  (right_filter_output5);	
+			spect_data <=  (spect_data5_right);	
 		end
 		else if (index == 10'd6) begin
-			spect_data <=  (right_filter_output6);	
+			spect_data <=  (spect_data6_right);	
 		end
 		else if (index == 10'd7) begin
-			spect_data <=  (right_filter_output7);	
+			spect_data <=  (spect_data7_right);	
 		end
 		else if (index == 10'd8) begin
-			spect_data <=  (right_filter_output8);	
+			spect_data <=  (spect_data8_right);	
 		end
 		else if (index == 10'd9) begin
-			spect_data <=  (right_filter_output9);	
+			spect_data <=  (spect_data9_right);	
 		end
 		else if (index == 10'd10) begin
-			spect_data <=  (right_filter_output10);	
+			spect_data <=  (spect_data10_right);	
 		end
 		else if (index == 10'd11) begin
-			spect_data <=  (right_filter_output11);	
+			spect_data <=  (spect_data11_right);	
 		end
 		else if (index == 10'd12) begin
-			spect_data <=  (right_filter_output12);	
+			spect_data <=  (spect_data12_right);	
 		end
 		else if (index == 10'd13) begin
-			spect_data <=  (right_filter_output13);	
+			spect_data <=  (spect_data13_right);	
 		end
 		else if (index == 10'd14) begin
-			spect_data <=  (right_filter_output14);	
+			spect_data <=  (spect_data14_right);	
 		end
 		else if (index == 10'd15) begin
-			spect_data <=  (right_filter_output15);	
+			spect_data <=  (spect_data15_right);	
 		end
 		else if (index == 10'd16) begin
-			spect_data <=  (right_filter_output16);	
+			spect_data <=  (spect_data16_right);	
 		end
 		else if (index == 10'd17) begin
-			spect_data <=  (right_filter_output17);	
+			spect_data <=  (spect_data17_right);	
 		end
 		else if (index == 10'd18) begin
-			spect_data <=  (right_filter_output18);	
+			spect_data <=  (spect_data18_right);	
 		end
 		else if (index == 10'd19) begin
-			spect_data <=  (right_filter_output19);	
+			spect_data <=  (spect_data19_right);	
 		end
 		else if (index == 10'd20) begin
-			spect_data <=  (right_filter_output20);	
+			spect_data <=  (spect_data20_right);	
 		end
 		else if (index == 10'd21) begin
-			spect_data <=  (right_filter_output21);	
+			spect_data <=  (spect_data21_right);	
 		end
 		else if (index == 10'd22) begin
-			spect_data <=  (right_filter_output22);	
+			spect_data <=  (spect_data22_right);	
 		end
 		else if (index == 10'd23) begin
-			spect_data <=  (right_filter_output23);	
+			spect_data <=  (spect_data23_right);	
 		end
 		else if (index == 10'd24) begin
-			spect_data <=  (right_filter_output24);	
+			spect_data <=  (spect_data24_right);	
 		end
 		else if (index == 10'd25) begin
-			spect_data <=  (right_filter_output25);	
+			spect_data <=  (spect_data25_right);	
 		end
 		else if (index == 10'd26) begin
-			spect_data <=  (right_filter_output26);	
+			spect_data <=  (spect_data26_right);	
 		end
 		else if (index == 10'd27) begin
-			spect_data <=  (right_filter_output27);	
+			spect_data <=  (spect_data27_right);	
 		end
 		else if (index == 10'd28) begin
-			spect_data <=  (right_filter_output28);	
+			spect_data <=  (spect_data28_right);	
 		end
 		else if (index == 10'd29) begin
-			spect_data <=  (right_filter_output29);	
+			spect_data <=  (spect_data29_right);	
 		end
 		else if (index == 10'd30) begin
-			spect_data <=  (right_filter_output30);	
+			spect_data <=  (spect_data30_right);	
 		end
 		else if (index == 10'd31) begin
-			spect_data <=  (right_filter_output31);	
+			spect_data <=  (spect_data31_right);	
 		end
 		else begin
-			spect_data <=  (right_filter_output32);	
+			spect_data <=  (spect_data32_right);	
 		end
 	
 		vga_sram_write <= 1'b0;
@@ -2184,36 +2194,59 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 	
 	if (vga_state == 4'd10) begin
 		vga_sram_write <= 1'b0;
-		if (spect_data < 8'd25) begin
+		if (spect_data < 18'b00_0000_0000_0000_0001) begin
 			color <= 8'd10;
 		end
-		else if (spect_data < 8'd50) begin
+		else if (spect_data < 18'b00_0000_0000_0000_0010) begin
 			color <= 8'd20;
 		end
-		else if (spect_data < 8'd75) begin
+		else if (spect_data < 18'b00_0000_0000_0000_0100) begin
 			color <= 8'd30;
 		end
-		else if (spect_data < 8'd100) begin
+		else if (spect_data < 18'b00_0000_0000_0000_1000) begin
 			color <= 8'd40;
 		end
-		else if (spect_data < 8'd125) begin
+		else if (spect_data < 18'b00_0000_0000_0001_0000) begin
 			color <= 8'd50;
 		end
-		else if (spect_data < 8'd150) begin
+		else if (spect_data < 18'b00_0000_0000_0010_0000) begin
 			color <= 8'd60;
 		end
-		
-		else if (spect_data < 8'd175) begin
+		else if (spect_data < 18'b00_0000_0000_0100_0000) begin
 			color <= 8'd70;
 		end
-		else if (spect_data < 8'd200) begin
+		else if (spect_data < 18'b00_0000_0000_1000_0000) begin
 			color <= 8'd80;
 		end
-		else if (spect_data < 8'd225) begin
+		else if (spect_data < 18'b00_0000_0001_0000_0000) begin
 			color <= 8'd90;
 		end
+		else if (spect_data < 18'b00_0000_0010_0000_0000) begin
+			color <= 8'd100;
+		end
+		else if (spect_data < 18'b00_0000_0100_0000_0000) begin
+			color <= 8'd110;
+		end
+		else if (spect_data < 18'b00_0000_1000_0000_0000) begin
+			color <= 8'd120;
+		end
+		else if (spect_data < 18'b00_0001_0000_0000_0000) begin
+			color <= 8'd130;
+		end
+		else if (spect_data < 18'b00_0010_0000_0000_0000) begin
+			color <= 8'd140;
+		end
+		else if (spect_data < 18'b00_0100_0000_0000_0000) begin
+			color <= 8'd150;
+		end
+		else if (spect_data < 18'b00_1000_0000_0000_0000) begin
+			color <= 8'd160;
+		end
+		else if (spect_data < 18'b01_0000_0000_0000_0000) begin
+			color <= 8'd170;
+		end
 		else begin
-			color <=8'd100;
+			color <=8'd180;
 		end
 		vga_state <= 4'd7;
 	end
@@ -2809,7 +2842,7 @@ begin
 					dds_accum <= dds_accum + freq_sw ;
 					mult_in2 <= wave_ex;
 					mult_in1 <= ((voice_in_abs - voice_low_old) >>> log_alpha) + voice_low_old;
-					spect_out <= mult_in1;
+					
 				end
 
 			end
@@ -2822,6 +2855,7 @@ begin
 				// wait for the audio_input_ready 
 				if (audio_input_ready)
 				begin
+					spect_out <= mult_in1;
 					voice_low_old <= mult_in1;
 					state <= 5'd1 ; 
 					audio_out <= product; 
