@@ -2544,7 +2544,7 @@ output wire signed [17:0] wave_ex = {wave[15],wave[15],wave};
 //signed_mult mod_mult(modulated_voice, (voice_low_new <<< 3) , wave_ex);
 //assign modulated_voice = voice_in;
 
-wire signed [4:0] log_alpha = 5'sd4;
+wire signed [4:0] log_alpha = 5'sd8;
 reg signed [17:0] Ai;
 
 // state variable 
@@ -2701,10 +2701,10 @@ begin
 					
 					dds_accum <= dds_accum + freq_sw ;
 					
-					mult_in1 <= voice_in_abs <<< 3;
+					//mult_in1 <= voice_in_abs <<< 3;
 					// voice_low_new <= voice_in_abs;
 					mult_in2 <= wave_ex;
-					//voice_low_new <= ((voice_in_abs - voice_low_old) >>> log_alpha) + voice_low_old;
+					mult_in1 <= ((voice_in_abs - voice_low_old) >>> log_alpha) + voice_low_old;
 					
 				end
 
@@ -2718,7 +2718,7 @@ begin
 				// wait for the audio_input_ready 
 				if (audio_input_ready)
 				begin
-					//voice_low_old <= voice_low_new;
+					voice_low_old <= mult_in1;
 					//mult_in2 <= wave_ex;
 					
 					debug <= 0;
