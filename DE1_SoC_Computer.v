@@ -444,21 +444,9 @@ reg [9:0] spect_height = 10'd7;
 
 
 // For audio loopback, or filtering
-assign right_audio_output = SW[9] ? debug_right9 :
-									 SW[8] ? debug_right8 :	
-									 SW[7] ? debug_right7 :
-									 SW[6] ? debug_right6 :
-									 SW[5] ? debug_right5 : 
-									 SW[4] ? right_filter_output3:
-									 SW[0] ? right_filter_output : right_audio_input ;
+assign right_audio_output = SW[0] ? right_filter_output : right_audio_input ;
 									 
-assign left_audio_output = SW[9] ? debug_left9 :
-									SW[8] ? debug_left8 :	
-									SW[7] ? debug_left7 :
-									SW[6] ? debug_left6 :
-									SW[5] ? debug_left5 : 
-									SW[4] ? left_filter_output3:
-								   SW[0] ? left_filter_output : left_audio_input ;
+assign left_audio_output =  SW[0] ? left_filter_output : left_audio_input ;
 /*									
 // For audio loopback, or filtering
 assign right_audio_output = SW[9] ? right_audio_input : right_filter_output;
@@ -557,9 +545,44 @@ wire [15:0]    right_filter_output , left_filter_output,
                right_filter_output31 , left_filter_output31, 
                right_filter_output32 , left_filter_output32; 
  
+
+wire [17:0]    spect_data1_right , spect_data1_left,  
+               spect_data2_right , spect_data2_left,  
+               spect_data3_right , spect_data3_left,  
+               spect_data4_right , spect_data4_left,  
+               spect_data5_right , spect_data5_left,  
+               spect_data6_right , spect_data6_left,  
+               spect_data7_right , spect_data7_left,  
+               spect_data8_right , spect_data8_left,  
+               spect_data9_right , spect_data9_left,  
+               spect_data10_right , spect_data10_left,  
+               spect_data11_right , spect_data11_left,  
+               spect_data12_right , spect_data12_left,  
+               spect_data13_right , spect_data13_left,  
+               spect_data14_right , spect_data14_left,  
+               spect_data15_right , spect_data15_left,  
+               spect_data16_right , spect_data16_left,  
+               spect_data17_right , spect_data17_left,  
+               spect_data18_right , spect_data18_left,  
+               spect_data19_right , spect_data19_left,  
+               spect_data20_right , spect_data20_left,  
+               spect_data21_right , spect_data21_left,  
+               spect_data22_right , spect_data22_left,  
+               spect_data23_right , spect_data23_left,  
+               spect_data24_right , spect_data24_left,  
+               spect_data25_right , spect_data25_left,  
+               spect_data26_right , spect_data26_left,  
+               spect_data27_right , spect_data27_left,  
+               spect_data28_right , spect_data28_left,  
+               spect_data29_right , spect_data29_left,  
+               spect_data30_right , spect_data30_left,  
+               spect_data31_right , spect_data31_left,  
+               spect_data32_right , spect_data32_left; 
  
  
  
+ wire [5:0] base_alpha = {1'd0,SW[9:6]};
+  
 //Filter 1 Right 
 //Filter 1: frequency=299.991723 
 //Filter 1: BW=0.035018 
@@ -568,6 +591,7 @@ IIR2_18bit_fixed filter1_RIGHT(
      .audio_out (right_filter_output1), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd26842805 <<< pitch_shift), 
+     .log_alpha(base_alpha+5'd4), 
      .b1 (18'sd45), 
      .b2 (18'sd0), 
      .b3 (-18'sd45), 
@@ -575,7 +599,8 @@ IIR2_18bit_fixed filter1_RIGHT(
      .a3 (-18'sd65445), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data1_right) 
 ) ; //end filter 
  
  
@@ -587,6 +612,7 @@ IIR2_18bit_fixed filter1_LEFT(
      .audio_out (left_filter_output1), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd26842805 <<< pitch_shift), 
+     .log_alpha(base_alpha+5'd4), 
      .b1 (18'sd45), 
      .b2 (18'sd0), 
      .b3 (-18'sd45), 
@@ -594,7 +620,8 @@ IIR2_18bit_fixed filter1_LEFT(
      .a3 (-18'sd65445), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data1_left) 
 ) ; //end filter 
  
  
@@ -606,6 +633,7 @@ IIR2_18bit_fixed filter2_RIGHT(
      .audio_out (right_filter_output2), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd31083129 <<< pitch_shift), 
+     .log_alpha(base_alpha+5'd3), 
      .b1 (18'sd52), 
      .b2 (18'sd0), 
      .b3 (-18'sd52), 
@@ -613,7 +641,8 @@ IIR2_18bit_fixed filter2_RIGHT(
      .a3 (-18'sd65431), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data2_right) 
 ) ; //end filter 
  
  
@@ -625,6 +654,7 @@ IIR2_18bit_fixed filter2_LEFT(
      .audio_out (left_filter_output2), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd31083129 <<< pitch_shift), 
+     .log_alpha(base_alpha+5'd3), 
      .b1 (18'sd52), 
      .b2 (18'sd0), 
      .b3 (-18'sd52), 
@@ -632,7 +662,8 @@ IIR2_18bit_fixed filter2_LEFT(
      .a3 (-18'sd65431), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data2_left) 
 ) ; //end filter 
  
  
@@ -644,6 +675,7 @@ IIR2_18bit_fixed filter3_RIGHT(
      .audio_out (right_filter_output3), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd35524401 <<< pitch_shift), 
+     .log_alpha(base_alpha+5'd2), 
      .b1 (18'sd59), 
      .b2 (18'sd0), 
      .b3 (-18'sd59), 
@@ -651,21 +683,10 @@ IIR2_18bit_fixed filter3_RIGHT(
      .a3 (-18'sd65416), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset),
-	  .voice_in_abs( debug_right9),
-	  .voice_low_new(debug_right8),
-	  .wave_ex(debug_right7),
-	  .modulated_voice(debug_right6),
-	  .f1_mac_new(debug_right5)  
+     .reset(reset), 
+     .spect_out(spect_data3_right) 
 ) ; //end filter 
  
-
- wire signed[15:0] debug_right9, debug_left9;
- wire signed[15:0] debug_right8, debug_left8;
- wire 		[15:0] debug_right7, debug_left7;
- wire signed[15:0] debug_right6, debug_left6;
- wire signed[15:0] debug_right5, debug_left5;
-
  
 //Filter 3 Left 
 //Filter 3: frequency=397.016117 
@@ -675,6 +696,7 @@ IIR2_18bit_fixed filter3_LEFT(
      .audio_out (left_filter_output3), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd35524401 <<< pitch_shift), 
+     .log_alpha(base_alpha+5'd2), 
      .b1 (18'sd59), 
      .b2 (18'sd0), 
      .b3 (-18'sd59), 
@@ -682,14 +704,8 @@ IIR2_18bit_fixed filter3_LEFT(
      .a3 (-18'sd65416), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset),
-	  .voice_in_abs( debug_left9),
-	  .voice_low_new(debug_left8),
-	  .wave_ex(debug_left7),
-	  .modulated_voice(debug_left6),
-	  .f1_mac_new(debug_left5)
- 
- 
+     .reset(reset), 
+     .spect_out(spect_data3_left) 
 ) ; //end filter 
  
  
@@ -701,6 +717,7 @@ IIR2_18bit_fixed filter4_RIGHT(
      .audio_out (right_filter_output4), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd40176143 <<< pitch_shift), 
+     .log_alpha(base_alpha+5'd1), 
      .b1 (18'sd67), 
      .b2 (18'sd0), 
      .b3 (-18'sd67), 
@@ -708,7 +725,8 @@ IIR2_18bit_fixed filter4_RIGHT(
      .a3 (-18'sd65401), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data4_right) 
 ) ; //end filter 
  
  
@@ -720,6 +738,7 @@ IIR2_18bit_fixed filter4_LEFT(
      .audio_out (left_filter_output4), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd40176143 <<< pitch_shift), 
+     .log_alpha(base_alpha+5'd1), 
      .b1 (18'sd67), 
      .b2 (18'sd0), 
      .b3 (-18'sd67), 
@@ -727,7 +746,8 @@ IIR2_18bit_fixed filter4_LEFT(
      .a3 (-18'sd65401), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data4_left) 
 ) ; //end filter 
  
  
@@ -739,6 +759,7 @@ IIR2_18bit_fixed filter5_RIGHT(
      .audio_out (right_filter_output5), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd45048330 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd75), 
      .b2 (18'sd0), 
      .b3 (-18'sd75), 
@@ -746,7 +767,8 @@ IIR2_18bit_fixed filter5_RIGHT(
      .a3 (-18'sd65384), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data5_right) 
 ) ; //end filter 
  
  
@@ -758,6 +780,7 @@ IIR2_18bit_fixed filter5_LEFT(
      .audio_out (left_filter_output5), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd45048330 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd75), 
      .b2 (18'sd0), 
      .b3 (-18'sd75), 
@@ -765,7 +788,8 @@ IIR2_18bit_fixed filter5_LEFT(
      .a3 (-18'sd65384), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data5_left) 
 ) ; //end filter 
  
  
@@ -777,6 +801,7 @@ IIR2_18bit_fixed filter6_RIGHT(
      .audio_out (right_filter_output6), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd50151409 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd84), 
      .b2 (18'sd0), 
      .b3 (-18'sd84), 
@@ -784,7 +809,8 @@ IIR2_18bit_fixed filter6_RIGHT(
      .a3 (-18'sd65367), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data6_right) 
 ) ; //end filter 
  
  
@@ -796,6 +822,7 @@ IIR2_18bit_fixed filter6_LEFT(
      .audio_out (left_filter_output6), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd50151409 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd84), 
      .b2 (18'sd0), 
      .b3 (-18'sd84), 
@@ -803,7 +830,8 @@ IIR2_18bit_fixed filter6_LEFT(
      .a3 (-18'sd65367), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data6_left) 
 ) ; //end filter 
  
  
@@ -815,6 +843,7 @@ IIR2_18bit_fixed filter7_RIGHT(
      .audio_out (right_filter_output7), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd55496321 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd93), 
      .b2 (18'sd0), 
      .b3 (-18'sd93), 
@@ -822,7 +851,8 @@ IIR2_18bit_fixed filter7_RIGHT(
      .a3 (-18'sd65349), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data7_right) 
 ) ; //end filter 
  
  
@@ -834,6 +864,7 @@ IIR2_18bit_fixed filter7_LEFT(
      .audio_out (left_filter_output7), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd55496321 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd93), 
      .b2 (18'sd0), 
      .b3 (-18'sd93), 
@@ -841,7 +872,8 @@ IIR2_18bit_fixed filter7_LEFT(
      .a3 (-18'sd65349), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data7_left) 
 ) ; //end filter 
  
  
@@ -853,6 +885,7 @@ IIR2_18bit_fixed filter8_RIGHT(
      .audio_out (right_filter_output8), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd61094527 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd102), 
      .b2 (18'sd0), 
      .b3 (-18'sd102), 
@@ -860,7 +893,8 @@ IIR2_18bit_fixed filter8_RIGHT(
      .a3 (-18'sd65331), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data8_right) 
 ) ; //end filter 
  
  
@@ -872,6 +906,7 @@ IIR2_18bit_fixed filter8_LEFT(
      .audio_out (left_filter_output8), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd61094527 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd102), 
      .b2 (18'sd0), 
      .b3 (-18'sd102), 
@@ -879,7 +914,8 @@ IIR2_18bit_fixed filter8_LEFT(
      .a3 (-18'sd65331), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data8_left) 
 ) ; //end filter 
  
  
@@ -891,6 +927,7 @@ IIR2_18bit_fixed filter9_RIGHT(
      .audio_out (right_filter_output9), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd66958030 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd112), 
      .b2 (18'sd0), 
      .b3 (-18'sd112), 
@@ -898,7 +935,8 @@ IIR2_18bit_fixed filter9_RIGHT(
      .a3 (-18'sd65311), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data9_right) 
 ) ; //end filter 
  
  
@@ -910,6 +948,7 @@ IIR2_18bit_fixed filter9_LEFT(
      .audio_out (left_filter_output9), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd66958030 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd112), 
      .b2 (18'sd0), 
      .b3 (-18'sd112), 
@@ -917,7 +956,8 @@ IIR2_18bit_fixed filter9_LEFT(
      .a3 (-18'sd65311), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data9_left) 
 ) ; //end filter 
  
  
@@ -929,6 +969,7 @@ IIR2_18bit_fixed filter10_RIGHT(
      .audio_out (right_filter_output10), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd73099402 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd122), 
      .b2 (18'sd0), 
      .b3 (-18'sd122), 
@@ -936,7 +977,8 @@ IIR2_18bit_fixed filter10_RIGHT(
      .a3 (-18'sd65291), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data10_right) 
 ) ; //end filter 
  
  
@@ -948,6 +990,7 @@ IIR2_18bit_fixed filter10_LEFT(
      .audio_out (left_filter_output10), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd73099402 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd122), 
      .b2 (18'sd0), 
      .b3 (-18'sd122), 
@@ -955,7 +998,8 @@ IIR2_18bit_fixed filter10_LEFT(
      .a3 (-18'sd65291), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data10_left) 
 ) ; //end filter 
  
  
@@ -967,6 +1011,7 @@ IIR2_18bit_fixed filter11_RIGHT(
      .audio_out (right_filter_output11), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd79531813 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd133), 
      .b2 (18'sd0), 
      .b3 (-18'sd133), 
@@ -974,7 +1019,8 @@ IIR2_18bit_fixed filter11_RIGHT(
      .a3 (-18'sd65269), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data11_right) 
 ) ; //end filter 
  
  
@@ -986,6 +1032,7 @@ IIR2_18bit_fixed filter11_LEFT(
      .audio_out (left_filter_output11), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd79531813 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd133), 
      .b2 (18'sd0), 
      .b3 (-18'sd133), 
@@ -993,7 +1040,8 @@ IIR2_18bit_fixed filter11_LEFT(
      .a3 (-18'sd65269), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data11_left) 
 ) ; //end filter 
  
  
@@ -1005,6 +1053,7 @@ IIR2_18bit_fixed filter12_RIGHT(
      .audio_out (right_filter_output12), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd86269054 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd144), 
      .b2 (18'sd0), 
      .b3 (-18'sd144), 
@@ -1012,7 +1061,8 @@ IIR2_18bit_fixed filter12_RIGHT(
      .a3 (-18'sd65247), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data12_right) 
 ) ; //end filter 
  
  
@@ -1024,6 +1074,7 @@ IIR2_18bit_fixed filter12_LEFT(
      .audio_out (left_filter_output12), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd86269054 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd144), 
      .b2 (18'sd0), 
      .b3 (-18'sd144), 
@@ -1031,7 +1082,8 @@ IIR2_18bit_fixed filter12_LEFT(
      .a3 (-18'sd65247), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data12_left) 
 ) ; //end filter 
  
  
@@ -1043,6 +1095,7 @@ IIR2_18bit_fixed filter13_RIGHT(
      .audio_out (right_filter_output13), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd93325570 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd156), 
      .b2 (18'sd0), 
      .b3 (-18'sd156), 
@@ -1050,7 +1103,8 @@ IIR2_18bit_fixed filter13_RIGHT(
      .a3 (-18'sd65223), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data13_right) 
 ) ; //end filter 
  
  
@@ -1062,6 +1116,7 @@ IIR2_18bit_fixed filter13_LEFT(
      .audio_out (left_filter_output13), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd93325570 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd156), 
      .b2 (18'sd0), 
      .b3 (-18'sd156), 
@@ -1069,7 +1124,8 @@ IIR2_18bit_fixed filter13_LEFT(
      .a3 (-18'sd65223), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data13_left) 
 ) ; //end filter 
  
  
@@ -1081,6 +1137,7 @@ IIR2_18bit_fixed filter14_RIGHT(
      .audio_out (right_filter_output14), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd100716493 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd168), 
      .b2 (18'sd0), 
      .b3 (-18'sd168), 
@@ -1088,7 +1145,8 @@ IIR2_18bit_fixed filter14_RIGHT(
      .a3 (-18'sd65198), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data14_right) 
 ) ; //end filter 
  
  
@@ -1100,6 +1158,7 @@ IIR2_18bit_fixed filter14_LEFT(
      .audio_out (left_filter_output14), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd100716493 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd168), 
      .b2 (18'sd0), 
      .b3 (-18'sd168), 
@@ -1107,7 +1166,8 @@ IIR2_18bit_fixed filter14_LEFT(
      .a3 (-18'sd65198), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data14_left) 
 ) ; //end filter 
  
  
@@ -1119,6 +1179,7 @@ IIR2_18bit_fixed filter15_RIGHT(
      .audio_out (right_filter_output15), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd108457670 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd181), 
      .b2 (18'sd0), 
      .b3 (-18'sd181), 
@@ -1126,7 +1187,8 @@ IIR2_18bit_fixed filter15_RIGHT(
      .a3 (-18'sd65173), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data15_right) 
 ) ; //end filter 
  
  
@@ -1138,6 +1200,7 @@ IIR2_18bit_fixed filter15_LEFT(
      .audio_out (left_filter_output15), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd108457670 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd181), 
      .b2 (18'sd0), 
      .b3 (-18'sd181), 
@@ -1145,10 +1208,11 @@ IIR2_18bit_fixed filter15_LEFT(
      .a3 (-18'sd65173), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data15_left) 
 ) ; //end filter 
  
-
+ 
 //Filter16 Right 
 //Filter16: frequency=1302.723195 
 //Filter16: BW=0.035004 
@@ -1157,6 +1221,7 @@ IIR2_18bit_fixed filter16_RIGHT(
      .audio_out (right_filter_output16), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd116565698 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd195), 
      .b2 (18'sd0), 
      .b3 (-18'sd195), 
@@ -1164,7 +1229,8 @@ IIR2_18bit_fixed filter16_RIGHT(
      .a3 (-18'sd65145), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data16_right) 
 ) ; //end filter 
  
  
@@ -1176,6 +1242,7 @@ IIR2_18bit_fixed filter16_LEFT(
      .audio_out (left_filter_output16), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd116565698 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd195), 
      .b2 (18'sd0), 
      .b3 (-18'sd195), 
@@ -1183,7 +1250,8 @@ IIR2_18bit_fixed filter16_LEFT(
      .a3 (-18'sd65145), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data16_left) 
 ) ; //end filter 
  
  
@@ -1195,6 +1263,7 @@ IIR2_18bit_fixed filter17_RIGHT(
      .audio_out (right_filter_output17), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd125057964 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd209), 
      .b2 (18'sd0), 
      .b3 (-18'sd209), 
@@ -1202,7 +1271,8 @@ IIR2_18bit_fixed filter17_RIGHT(
      .a3 (-18'sd65117), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data17_right) 
 ) ; //end filter 
  
  
@@ -1214,6 +1284,7 @@ IIR2_18bit_fixed filter17_LEFT(
      .audio_out (left_filter_output17), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd125057964 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd209), 
      .b2 (18'sd0), 
      .b3 (-18'sd209), 
@@ -1221,7 +1292,8 @@ IIR2_18bit_fixed filter17_LEFT(
      .a3 (-18'sd65117), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data17_left) 
 ) ; //end filter 
  
  
@@ -1233,6 +1305,7 @@ IIR2_18bit_fixed filter18_RIGHT(
      .audio_out (right_filter_output18), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd133952676 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd223), 
      .b2 (18'sd0), 
      .b3 (-18'sd223), 
@@ -1240,7 +1313,8 @@ IIR2_18bit_fixed filter18_RIGHT(
      .a3 (-18'sd65088), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data18_right) 
 ) ; //end filter 
  
  
@@ -1252,6 +1326,7 @@ IIR2_18bit_fixed filter18_LEFT(
      .audio_out (left_filter_output18), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd133952676 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd223), 
      .b2 (18'sd0), 
      .b3 (-18'sd223), 
@@ -1259,7 +1334,8 @@ IIR2_18bit_fixed filter18_LEFT(
      .a3 (-18'sd65088), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data18_left) 
 ) ; //end filter 
  
  
@@ -1271,6 +1347,7 @@ IIR2_18bit_fixed filter19_RIGHT(
      .audio_out (right_filter_output19), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd143268905 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd239), 
      .b2 (18'sd0), 
      .b3 (-18'sd239), 
@@ -1278,7 +1355,8 @@ IIR2_18bit_fixed filter19_RIGHT(
      .a3 (-18'sd65056), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data19_right) 
 ) ; //end filter 
  
  
@@ -1290,6 +1368,7 @@ IIR2_18bit_fixed filter19_LEFT(
      .audio_out (left_filter_output19), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd143268905 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd239), 
      .b2 (18'sd0), 
      .b3 (-18'sd239), 
@@ -1297,7 +1376,8 @@ IIR2_18bit_fixed filter19_LEFT(
      .a3 (-18'sd65056), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data19_left) 
 ) ; //end filter 
  
  
@@ -1309,6 +1389,7 @@ IIR2_18bit_fixed filter20_RIGHT(
      .audio_out (right_filter_output20), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd153026628 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd255), 
      .b2 (18'sd0), 
      .b3 (-18'sd255), 
@@ -1316,7 +1397,8 @@ IIR2_18bit_fixed filter20_RIGHT(
      .a3 (-18'sd65024), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data20_right) 
 ) ; //end filter 
  
  
@@ -1328,6 +1410,7 @@ IIR2_18bit_fixed filter20_LEFT(
      .audio_out (left_filter_output20), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd153026628 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd255), 
      .b2 (18'sd0), 
      .b3 (-18'sd255), 
@@ -1335,7 +1418,8 @@ IIR2_18bit_fixed filter20_LEFT(
      .a3 (-18'sd65024), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data20_left) 
 ) ; //end filter 
  
  
@@ -1347,6 +1431,7 @@ IIR2_18bit_fixed filter21_RIGHT(
      .audio_out (right_filter_output21), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd163246766 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd272), 
      .b2 (18'sd0), 
      .b3 (-18'sd272), 
@@ -1354,7 +1439,8 @@ IIR2_18bit_fixed filter21_RIGHT(
      .a3 (-18'sd64990), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data21_right) 
 ) ; //end filter 
  
  
@@ -1366,6 +1452,7 @@ IIR2_18bit_fixed filter21_LEFT(
      .audio_out (left_filter_output21), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd163246766 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd272), 
      .b2 (18'sd0), 
      .b3 (-18'sd272), 
@@ -1373,7 +1460,8 @@ IIR2_18bit_fixed filter21_LEFT(
      .a3 (-18'sd64990), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data21_left) 
 ) ; //end filter 
  
  
@@ -1385,6 +1473,7 @@ IIR2_18bit_fixed filter22_RIGHT(
      .audio_out (right_filter_output22), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd173951234 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd290), 
      .b2 (18'sd0), 
      .b3 (-18'sd290), 
@@ -1392,7 +1481,8 @@ IIR2_18bit_fixed filter22_RIGHT(
      .a3 (-18'sd64954), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data22_right) 
 ) ; //end filter 
  
  
@@ -1404,6 +1494,7 @@ IIR2_18bit_fixed filter22_LEFT(
      .audio_out (left_filter_output22), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd173951234 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd290), 
      .b2 (18'sd0), 
      .b3 (-18'sd290), 
@@ -1411,7 +1502,8 @@ IIR2_18bit_fixed filter22_LEFT(
      .a3 (-18'sd64954), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data22_left) 
 ) ; //end filter 
  
  
@@ -1423,6 +1515,7 @@ IIR2_18bit_fixed filter23_RIGHT(
      .audio_out (right_filter_output23), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd185162983 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd309), 
      .b2 (18'sd0), 
      .b3 (-18'sd309), 
@@ -1430,7 +1523,8 @@ IIR2_18bit_fixed filter23_RIGHT(
      .a3 (-18'sd64917), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data23_right) 
 ) ; //end filter 
  
  
@@ -1442,6 +1536,7 @@ IIR2_18bit_fixed filter23_LEFT(
      .audio_out (left_filter_output23), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd185162983 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd309), 
      .b2 (18'sd0), 
      .b3 (-18'sd309), 
@@ -1449,7 +1544,8 @@ IIR2_18bit_fixed filter23_LEFT(
      .a3 (-18'sd64917), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data23_left) 
 ) ; //end filter 
  
  
@@ -1461,6 +1557,7 @@ IIR2_18bit_fixed filter24_RIGHT(
      .audio_out (right_filter_output24), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd196906054 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd328), 
      .b2 (18'sd0), 
      .b3 (-18'sd328), 
@@ -1468,7 +1565,8 @@ IIR2_18bit_fixed filter24_RIGHT(
      .a3 (-18'sd64878), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data24_right) 
 ) ; //end filter 
  
  
@@ -1480,6 +1578,7 @@ IIR2_18bit_fixed filter24_LEFT(
      .audio_out (left_filter_output24), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd196906054 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd328), 
      .b2 (18'sd0), 
      .b3 (-18'sd328), 
@@ -1487,7 +1586,8 @@ IIR2_18bit_fixed filter24_LEFT(
      .a3 (-18'sd64878), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data24_left) 
 ) ; //end filter 
  
  
@@ -1499,6 +1599,7 @@ IIR2_18bit_fixed filter25_RIGHT(
      .audio_out (right_filter_output25), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd209205626 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd349), 
      .b2 (18'sd0), 
      .b3 (-18'sd349), 
@@ -1506,7 +1607,8 @@ IIR2_18bit_fixed filter25_RIGHT(
      .a3 (-18'sd64837), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data25_right) 
 ) ; //end filter 
  
  
@@ -1518,6 +1620,7 @@ IIR2_18bit_fixed filter25_LEFT(
      .audio_out (left_filter_output25), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd209205626 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd349), 
      .b2 (18'sd0), 
      .b3 (-18'sd349), 
@@ -1525,7 +1628,8 @@ IIR2_18bit_fixed filter25_LEFT(
      .a3 (-18'sd64837), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data25_left) 
 ) ; //end filter 
  
  
@@ -1537,6 +1641,7 @@ IIR2_18bit_fixed filter26_RIGHT(
      .audio_out (right_filter_output26), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd222088070 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd370), 
      .b2 (18'sd0), 
      .b3 (-18'sd370), 
@@ -1544,7 +1649,8 @@ IIR2_18bit_fixed filter26_RIGHT(
      .a3 (-18'sd64794), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data26_right) 
 ) ; //end filter 
  
  
@@ -1556,6 +1662,7 @@ IIR2_18bit_fixed filter26_LEFT(
      .audio_out (left_filter_output26), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd222088070 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd370), 
      .b2 (18'sd0), 
      .b3 (-18'sd370), 
@@ -1563,7 +1670,8 @@ IIR2_18bit_fixed filter26_LEFT(
      .a3 (-18'sd64794), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data26_left) 
 ) ; //end filter 
  
  
@@ -1575,6 +1683,7 @@ IIR2_18bit_fixed filter27_RIGHT(
      .audio_out (right_filter_output27), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd235581010 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd392), 
      .b2 (18'sd0), 
      .b3 (-18'sd392), 
@@ -1582,7 +1691,8 @@ IIR2_18bit_fixed filter27_RIGHT(
      .a3 (-18'sd64750), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data27_right) 
 ) ; //end filter 
  
  
@@ -1594,6 +1704,7 @@ IIR2_18bit_fixed filter27_LEFT(
      .audio_out (left_filter_output27), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd235581010 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd392), 
      .b2 (18'sd0), 
      .b3 (-18'sd392), 
@@ -1601,7 +1712,8 @@ IIR2_18bit_fixed filter27_LEFT(
      .a3 (-18'sd64750), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data27_left) 
 ) ; //end filter 
  
  
@@ -1613,6 +1725,7 @@ IIR2_18bit_fixed filter28_RIGHT(
      .audio_out (right_filter_output28), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd249713377 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd416), 
      .b2 (18'sd0), 
      .b3 (-18'sd416), 
@@ -1620,7 +1733,8 @@ IIR2_18bit_fixed filter28_RIGHT(
      .a3 (-18'sd64703), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data28_right) 
 ) ; //end filter 
  
  
@@ -1632,6 +1746,7 @@ IIR2_18bit_fixed filter28_LEFT(
      .audio_out (left_filter_output28), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd249713377 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd416), 
      .b2 (18'sd0), 
      .b3 (-18'sd416), 
@@ -1639,7 +1754,8 @@ IIR2_18bit_fixed filter28_LEFT(
      .a3 (-18'sd64703), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data28_left) 
 ) ; //end filter 
  
  
@@ -1651,6 +1767,7 @@ IIR2_18bit_fixed filter29_RIGHT(
      .audio_out (right_filter_output29), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd264515472 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd440), 
      .b2 (18'sd0), 
      .b3 (-18'sd440), 
@@ -1658,7 +1775,8 @@ IIR2_18bit_fixed filter29_RIGHT(
      .a3 (-18'sd64654), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data29_right) 
 ) ; //end filter 
  
  
@@ -1670,6 +1788,7 @@ IIR2_18bit_fixed filter29_LEFT(
      .audio_out (left_filter_output29), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd264515472 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd440), 
      .b2 (18'sd0), 
      .b3 (-18'sd440), 
@@ -1677,7 +1796,8 @@ IIR2_18bit_fixed filter29_LEFT(
      .a3 (-18'sd64654), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data29_left) 
 ) ; //end filter 
  
  
@@ -1689,6 +1809,7 @@ IIR2_18bit_fixed filter30_RIGHT(
      .audio_out (right_filter_output30), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd280019034 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd466), 
      .b2 (18'sd0), 
      .b3 (-18'sd466), 
@@ -1696,7 +1817,8 @@ IIR2_18bit_fixed filter30_RIGHT(
      .a3 (-18'sd64603), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data30_right) 
 ) ; //end filter 
  
  
@@ -1708,6 +1830,7 @@ IIR2_18bit_fixed filter30_LEFT(
      .audio_out (left_filter_output30), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd280019034 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd466), 
      .b2 (18'sd0), 
      .b3 (-18'sd466), 
@@ -1715,7 +1838,8 @@ IIR2_18bit_fixed filter30_LEFT(
      .a3 (-18'sd64603), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data30_left) 
 ) ; //end filter 
  
  
@@ -1727,6 +1851,7 @@ IIR2_18bit_fixed filter31_RIGHT(
      .audio_out (right_filter_output31), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd296257305 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd493), 
      .b2 (18'sd0), 
      .b3 (-18'sd493), 
@@ -1734,7 +1859,8 @@ IIR2_18bit_fixed filter31_RIGHT(
      .a3 (-18'sd64549), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data31_right) 
 ) ; //end filter 
  
  
@@ -1746,6 +1872,7 @@ IIR2_18bit_fixed filter31_LEFT(
      .audio_out (left_filter_output31), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd296257305 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd493), 
      .b2 (18'sd0), 
      .b3 (-18'sd493), 
@@ -1753,7 +1880,8 @@ IIR2_18bit_fixed filter31_LEFT(
      .a3 (-18'sd64549), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data31_left) 
 ) ; //end filter 
  
  
@@ -1765,6 +1893,7 @@ IIR2_18bit_fixed filter32_RIGHT(
      .audio_out (right_filter_output32), 
      .audio_in (right_audio_input), 
      .freq_sw (32'd313265103 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd521), 
      .b2 (18'sd0), 
      .b3 (-18'sd521), 
@@ -1772,7 +1901,8 @@ IIR2_18bit_fixed filter32_RIGHT(
      .a3 (-18'sd64493), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data32_right) 
 ) ; //end filter 
  
  
@@ -1784,6 +1914,7 @@ IIR2_18bit_fixed filter32_LEFT(
      .audio_out (left_filter_output32), 
      .audio_in (left_audio_input), 
      .freq_sw (32'd313265103 <<< pitch_shift), 
+     .log_alpha(base_alpha), 
      .b1 (18'sd521), 
      .b2 (18'sd0), 
      .b3 (-18'sd521), 
@@ -1791,10 +1922,10 @@ IIR2_18bit_fixed filter32_LEFT(
      .a3 (-18'sd64493), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset), 
+     .spect_out(spect_data32_left) 
 ) ; //end filter 
  
-
  
 // ===============================================
 // === Video SRAM bus master state machine ============
@@ -2480,10 +2611,10 @@ endmodule
 ///////////////////////////////////////////////////////////////////
 module IIR2_18bit_fixed (audio_out, audio_in, 
 			freq_sw,
+			log_alpha,
 			b1, b2, b3, 
 			a2, a3, 
-			state_clk, audio_input_ready, reset,
-			voice_in_abs, voice_low_new, wave_ex,  modulated_voice, f1_mac_new, debug) ;
+			state_clk, audio_input_ready, reset, spect_out) ;
 // The filter is a "Direct Form II Transposed"
 // 
 //    a(1)*y(n) = b(1)*x(n) + b(2)*x(n-1) + ... + b(nb+1)*x(n-nb)
@@ -2504,9 +2635,8 @@ input wire [31:0] freq_sw;
 input wire signed [17:0] b1, b2, b3, a2, a3 ;
 input wire state_clk, audio_input_ready, reset ;
 
-output reg debug;
 /// filter vars //////////////////////////////////////////////////
-output wire signed [17:0] f1_mac_new;
+wire signed [17:0] f1_mac_new;
 wire signed [17:0] f1_coeff_x_value ;
 reg signed [17:0] f1_coeff, f1_mac_old, f1_value ;
 
@@ -2525,6 +2655,8 @@ wire signed [17:0] product;
 reg  signed [17:0] mult_in1;
 reg  signed [17:0] mult_in2;
 
+output reg  signed [17:0] spect_out;
+
 assign f1_mac_new =  f1_mac_old +  product ;
 
 // MAC operation
@@ -2532,20 +2664,19 @@ assign f1_mac_new =  f1_mac_old +  product ;
 //assign f1_mac_new =  f1_mac_old + f1_coeff_x_value ;
 
 // modulate by sine wave
-output reg signed [17:0] voice_in_abs;
+reg signed [17:0] voice_in_abs;
 reg signed [17:0] voice_low_old;
-output reg signed [17:0] voice_low_new;
-output wire signed [17:0] modulated_voice;
+reg signed [17:0] voice_low_new;
+wire signed [17:0] modulated_voice;
 wire [15:0] wave;
 reg [31:0] dds_accum ;
 sync_rom sineTable(state_clk, dds_accum[31:24], wave);
 
-output wire signed [17:0] wave_ex = {wave[15],wave[15],wave};
+wire signed [17:0] wave_ex = {wave[15],wave[15],wave};
 //signed_mult mod_mult(modulated_voice, (voice_low_new <<< 3) , wave_ex);
 //assign modulated_voice = voice_in;
 
-wire signed [4:0] log_alpha = 5'sd8;
-reg signed [17:0] Ai;
+input wire signed [4:0] log_alpha;
 
 // state variable 
 reg [5:0] state ;
@@ -2556,14 +2687,6 @@ reg last_clk ;
 //Run the filter state machine FAST so that it completes in one 
 //audio cycle
 
-/*
-always @ (posedge state_clk)
-begin
-		if (audio_input_ready) 
-		begin
-			dds_accum <= dds_accum + {freq_sw, 16'b0} ;
-		end
-end*/
 
 always @ (posedge state_clk) 
 begin
@@ -2660,19 +2783,6 @@ begin
 			
 			15: // take absolute value
 			begin
-				// wait for the audio_input_ready 
-				/*if (freq_sw[3])
-				begin
-					if (audio_input_ready)
-					begin
-						state <= 5'd1 ; 
-						audio_out <= f1_mac_new ;
-					end
-					
-			   end
-				
-				else
-				begin*/
 					if (audio_input_ready)
 					begin
 						state <= 5'd16 ; 
@@ -2683,13 +2793,12 @@ begin
 						end
 						else
 						begin
-							voice_in_abs <= f1_mac_new ; //f1_y_n1[17:2] ;	
+							voice_in_abs <= f1_mac_new ; 
 						end
 					   // ========================================================
 					end
-					end
-				//end
-			//end
+				end
+
 			
 			16: // LPF-power 
 			begin
@@ -2697,15 +2806,10 @@ begin
 				if (audio_input_ready) 
 				begin
 					state <= 5'd17 ; 
-					debug <= 1;
-					
 					dds_accum <= dds_accum + freq_sw ;
-					
-					//mult_in1 <= voice_in_abs <<< 3;
-					// voice_low_new <= voice_in_abs;
 					mult_in2 <= wave_ex;
 					mult_in1 <= ((voice_in_abs - voice_low_old) >>> log_alpha) + voice_low_old;
-					
+					spect_out <= mult_in1;
 				end
 
 			end
@@ -2719,9 +2823,6 @@ begin
 				if (audio_input_ready)
 				begin
 					voice_low_old <= mult_in1;
-					//mult_in2 <= wave_ex;
-					
-					debug <= 0;
 					state <= 5'd1 ; 
 					audio_out <= product; 
 				end
@@ -2731,7 +2832,6 @@ begin
 			default:
 			begin
 				// default state is end state
-				//state <= 4'd15 ;
 				state <= 5'd17 ;
 			end
 		endcase
