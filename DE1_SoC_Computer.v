@@ -1810,7 +1810,7 @@ reg [7:0] count;
 reg [9:0] vga_timer;
 reg [9:0] back_x, back_y;
 wire [10:0] TIME_STOP = 10'd500;
-reg [7:0] spect_data;
+reg [7:0] spect_data, color;
 reg [9:0] index;
 
 always @(posedge CLOCK_50) begin //CLOCK_50
@@ -1903,9 +1903,9 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 	if (vga_state == 4'd6) begin
 		vga_sram_write <= 1'b1;
 		vga_sram_writedata <= 8'd0;
-		vga_state <=4'd7;
+		vga_state <=4'd10;
 		vga_y_cood <=vga_y_spect_top;
-		spect_data <= (right_filter_output1<<<5);	
+		spect_data <= (right_filter_output1);	
 			
 	end
 	
@@ -1915,13 +1915,13 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 	
 	if (vga_state == 4'd7) begin
 		
-		if (vga_y_cood < vga_y_spect_top + index*10'd14) begin
-			vga_sram_writedata <= spect_data;
+		if (vga_y_cood < vga_y_spect_top + index*10'd7) begin
+			vga_sram_writedata <= color;
 			vga_sram_write <= 1'b1;
 			vga_sram_address <= vga_out_base_address + {22'b0, vga_x_cood} + ({22'b0, vga_y_cood}*640);
 			vga_state <=4'd8;
 		end
-		else if (vga_y_cood == vga_y_spect_top + index*10'd14 && index <= 10'd16) begin
+		else if (vga_y_cood == vga_y_spect_top + index*10'd7 && index <= 10'd32) begin
 			index <= index + 10'd1;
 			vga_state <=4'd8;
 		end
@@ -1934,57 +1934,105 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 	if (vga_state == 4'd8) begin
 	
 		if (index == 10'd1) begin
-			spect_data <=  (right_filter_output1<<<5);	
+			spect_data <=  (right_filter_output1);	
 		end
 		else if (index == 10'd2) begin
-			spect_data <=  (right_filter_output2<<<5);	
+			spect_data <=  (right_filter_output2);	
 		end
 		else if (index == 10'd3) begin
-			spect_data <=  (right_filter_output3<<<5);	
+			spect_data <=  (right_filter_output3);	
 		end
 		else if (index == 10'd4) begin
-			spect_data <=  (right_filter_output4<<<5);	
+			spect_data <=  (right_filter_output4);	
 		end
 		else if (index == 10'd5) begin
-			spect_data <=  (right_filter_output5<<<5);	
+			spect_data <=  (right_filter_output5);	
 		end
 		else if (index == 10'd6) begin
-			spect_data <=  (right_filter_output6<<<5);	
+			spect_data <=  (right_filter_output6);	
 		end
 		else if (index == 10'd7) begin
-			spect_data <=  (right_filter_output7<<<5);	
+			spect_data <=  (right_filter_output7);	
 		end
 		else if (index == 10'd8) begin
-			spect_data <=  (right_filter_output8<<<5);	
+			spect_data <=  (right_filter_output8);	
 		end
 		else if (index == 10'd9) begin
-			spect_data <=  (right_filter_output9<<<5);	
+			spect_data <=  (right_filter_output9);	
 		end
 		else if (index == 10'd10) begin
-			spect_data <=  (right_filter_output10<<<5);	
+			spect_data <=  (right_filter_output10);	
 		end
 		else if (index == 10'd11) begin
-			spect_data <=  (right_filter_output11<<<5);	
+			spect_data <=  (right_filter_output11);	
 		end
 		else if (index == 10'd12) begin
-			spect_data <=  (right_filter_output12<<<5);	
+			spect_data <=  (right_filter_output12);	
 		end
 		else if (index == 10'd13) begin
-			spect_data <=  (right_filter_output13<<<5);	
+			spect_data <=  (right_filter_output13);	
 		end
 		else if (index == 10'd14) begin
-			spect_data <=  (right_filter_output14<<<5);	
+			spect_data <=  (right_filter_output14);	
 		end
 		else if (index == 10'd15) begin
-			spect_data <=  (right_filter_output15<<<5);	
+			spect_data <=  (right_filter_output15);	
+		end
+		else if (index == 10'd16) begin
+			spect_data <=  (right_filter_output16);	
+		end
+		else if (index == 10'd17) begin
+			spect_data <=  (right_filter_output17);	
+		end
+		else if (index == 10'd18) begin
+			spect_data <=  (right_filter_output18);	
+		end
+		else if (index == 10'd19) begin
+			spect_data <=  (right_filter_output19);	
+		end
+		else if (index == 10'd20) begin
+			spect_data <=  (right_filter_output20);	
+		end
+		else if (index == 10'd21) begin
+			spect_data <=  (right_filter_output21);	
+		end
+		else if (index == 10'd22) begin
+			spect_data <=  (right_filter_output22);	
+		end
+		else if (index == 10'd23) begin
+			spect_data <=  (right_filter_output23);	
+		end
+		else if (index == 10'd24) begin
+			spect_data <=  (right_filter_output24);	
+		end
+		else if (index == 10'd25) begin
+			spect_data <=  (right_filter_output25);	
+		end
+		else if (index == 10'd26) begin
+			spect_data <=  (right_filter_output26);	
+		end
+		else if (index == 10'd27) begin
+			spect_data <=  (right_filter_output27);	
+		end
+		else if (index == 10'd28) begin
+			spect_data <=  (right_filter_output28);	
+		end
+		else if (index == 10'd29) begin
+			spect_data <=  (right_filter_output29);	
+		end
+		else if (index == 10'd30) begin
+			spect_data <=  (right_filter_output30);	
+		end
+		else if (index == 10'd31) begin
+			spect_data <=  (right_filter_output31);	
 		end
 		else begin
-			spect_data <=  (right_filter_output16<<<5);	
+			spect_data <=  (right_filter_output32);	
 		end
 	
 		vga_sram_write <= 1'b0;
 		vga_y_cood <= vga_y_cood + 10'd1;
-		vga_state <=4'd7;
+		vga_state <=4'd10;
 	end
 	
 	//Next row 
@@ -2003,6 +2051,41 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 		
 	end
 	
+	if (vga_state == 4'd10) begin
+		vga_sram_write <= 1'b0;
+		if (spect_data < 8'd25) begin
+			color <= 8'd10;
+		end
+		else if (spect_data < 8'd50) begin
+			color <= 8'd20;
+		end
+		else if (spect_data < 8'd75) begin
+			color <= 8'd30;
+		end
+		else if (spect_data < 8'd100) begin
+			color <= 8'd40;
+		end
+		else if (spect_data < 8'd125) begin
+			color <= 8'd50;
+		end
+		else if (spect_data < 8'd150) begin
+			color <= 8'd60;
+		end
+		
+		else if (spect_data < 8'd175) begin
+			color <= 8'd70;
+		end
+		else if (spect_data < 8'd200) begin
+			color <= 8'd80;
+		end
+		else if (spect_data < 8'd225) begin
+			color <= 8'd90;
+		end
+		else begin
+			color <=8'd100;
+		end
+		vga_state <= 4'd7;
+	end
 	
 end // always @(posedge state_clock)
 
