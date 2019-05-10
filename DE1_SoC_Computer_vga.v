@@ -463,9 +463,9 @@ assign left_audio_output = SW[9] ? debug_left9 :
 									SW[1] ? left_filter_output : left_audio_input ;*/
 									
 // For audio loopback, or filtering
-assign right_audio_output = SW[1] ? right_audio_input : right_filter_output;
+assign right_audio_output = SW[9] ? right_audio_input : right_filter_output;
 									 
-assign left_audio_output = SW[1] ? left_audio_input : left_filter_output;
+assign left_audio_output = SW[9] ? left_audio_input : left_filter_output;
 									
 wire [7:0] pitch_shift = SW[9:2];							
 									
@@ -560,8 +560,7 @@ wire [15:0]    right_filter_output , left_filter_output,
                right_filter_output32 , left_filter_output32; 
  
  
- wire [16:0] power_f1, power_f2,power_f3, power_f4, power_f5, power_f6,power_f7, power_f8, 
- power_f9, power_f10,power_f11, power_f12, power_f13, power_f14,power_f15, power_f16; 
+ 
  
 //Filter 1 Right 
 //Filter 1: frequency=299.991723 
@@ -579,7 +578,7 @@ IIR2_18bit_fixed filter1_RIGHT(
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
      .reset(reset),
-	  .voice_low_new(power_f1)
+	  .voice_low_new(spect_data1)
 ) ; //end filter 
  
  
@@ -598,7 +597,7 @@ IIR2_18bit_fixed filter1_LEFT(
      .a3 (-18'sd65445), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset),
+     .reset(reset) 
 ) ; //end filter 
  
  
@@ -617,7 +616,8 @@ IIR2_18bit_fixed filter2_RIGHT(
      .a3 (-18'sd65431), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset),
+	  .voice_low_new(spect_data2) 
 ) ; //end filter 
  
  
@@ -636,8 +636,7 @@ IIR2_18bit_fixed filter2_LEFT(
      .a3 (-18'sd65431), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset),
-	  .voice_low_new(power_f2)
+     .reset(reset) 
 ) ; //end filter 
  
  
@@ -656,7 +655,8 @@ IIR2_18bit_fixed filter3_RIGHT(
      .a3 (-18'sd65416), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset),
+	  .voice_low_new(spect_data3)
 ) ; //end filter 
  
  
@@ -675,8 +675,7 @@ IIR2_18bit_fixed filter3_LEFT(
      .a3 (-18'sd65416), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset),
-	  .voice_low_new(power_f3)
+     .reset(reset) 
 ) ; //end filter 
  
  
@@ -695,7 +694,8 @@ IIR2_18bit_fixed filter4_RIGHT(
      .a3 (-18'sd65401), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset) ,
+	  .voice_low_new(spect_data4)
 ) ; //end filter 
  
  
@@ -714,8 +714,7 @@ IIR2_18bit_fixed filter4_LEFT(
      .a3 (-18'sd65401), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset),
-	  .voice_low_new(power_f4)
+     .reset(reset) 
 ) ; //end filter 
  
  
@@ -734,7 +733,8 @@ IIR2_18bit_fixed filter5_RIGHT(
      .a3 (-18'sd65384), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset),
+	  .voice_low_new(spect_data5)
 ) ; //end filter 
  
  
@@ -753,8 +753,7 @@ IIR2_18bit_fixed filter5_LEFT(
      .a3 (-18'sd65384), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset),
-	  .voice_low_new(power_f5) 
+     .reset(reset) 
 ) ; //end filter 
  
  
@@ -773,7 +772,8 @@ IIR2_18bit_fixed filter6_RIGHT(
      .a3 (-18'sd65367), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset),
+	  .voice_low_new(spect_data6) 
 ) ; //end filter 
  
  
@@ -792,8 +792,7 @@ IIR2_18bit_fixed filter6_LEFT(
      .a3 (-18'sd65367), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset),
-	  .voice_low_new(power_f6)
+     .reset(reset) 
 ) ; //end filter 
  
  
@@ -812,7 +811,8 @@ IIR2_18bit_fixed filter7_RIGHT(
      .a3 (-18'sd65349), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset),
+	  .voice_low_new(spect_data7) 
 ) ; //end filter 
  
  
@@ -831,8 +831,7 @@ IIR2_18bit_fixed filter7_LEFT(
      .a3 (-18'sd65349), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset),
-	  .voice_low_new(power_f7)
+     .reset(reset) 
 ) ; //end filter 
  
  
@@ -851,7 +850,8 @@ IIR2_18bit_fixed filter8_RIGHT(
      .a3 (-18'sd65331), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset),
+	  .voice_low_new(spect_data8)
 ) ; //end filter 
  
  
@@ -870,8 +870,7 @@ IIR2_18bit_fixed filter8_LEFT(
      .a3 (-18'sd65331), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset),
-	  .voice_low_new(power_f8)
+     .reset(reset) 
 ) ; //end filter 
  
  
@@ -890,7 +889,8 @@ IIR2_18bit_fixed filter9_RIGHT(
      .a3 (-18'sd65311), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset),
+	  .voice_low_new(spect_data9)
 ) ; //end filter 
  
  
@@ -910,7 +910,7 @@ IIR2_18bit_fixed filter9_LEFT(
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
      .reset(reset),
-	 .voice_low_new(power_f9) 
+	  
 ) ; //end filter 
  
  
@@ -929,7 +929,8 @@ IIR2_18bit_fixed filter10_RIGHT(
      .a3 (-18'sd65291), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset),
+	  .voice_low_new(spect_data10)
 ) ; //end filter 
  
  
@@ -948,8 +949,7 @@ IIR2_18bit_fixed filter10_LEFT(
      .a3 (-18'sd65291), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset),
-	  .voice_low_new(power_f10)
+     .reset(reset) 
 ) ; //end filter 
  
  
@@ -968,7 +968,8 @@ IIR2_18bit_fixed filter11_RIGHT(
      .a3 (-18'sd65269), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset),
+	  .voice_low_new(spect_data11) 
 ) ; //end filter 
  
  
@@ -987,8 +988,7 @@ IIR2_18bit_fixed filter11_LEFT(
      .a3 (-18'sd65269), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset),
-	  .voice_low_new(power_f11)
+     .reset(reset) 
 ) ; //end filter 
  
  
@@ -1007,7 +1007,8 @@ IIR2_18bit_fixed filter12_RIGHT(
      .a3 (-18'sd65247), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset),
+	  .voice_low_new(spect_data12)
 ) ; //end filter 
  
  
@@ -1026,8 +1027,7 @@ IIR2_18bit_fixed filter12_LEFT(
      .a3 (-18'sd65247), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset),
-	 .voice_low_new(power_f12) 
+     .reset(reset) 
 ) ; //end filter 
  
  
@@ -1046,7 +1046,8 @@ IIR2_18bit_fixed filter13_RIGHT(
      .a3 (-18'sd65223), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset),
+	  .voice_low_new(spect_data13)
 ) ; //end filter 
  
  
@@ -1065,8 +1066,7 @@ IIR2_18bit_fixed filter13_LEFT(
      .a3 (-18'sd65223), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset),
-	  .voice_low_new(power_f13)
+     .reset(reset) 
 ) ; //end filter 
  
  
@@ -1085,7 +1085,8 @@ IIR2_18bit_fixed filter14_RIGHT(
      .a3 (-18'sd65198), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset),
+	  .voice_low_new(spect_data14)
 ) ; //end filter 
  
  
@@ -1104,8 +1105,7 @@ IIR2_18bit_fixed filter14_LEFT(
      .a3 (-18'sd65198), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset),
-	 .voice_low_new(power_f14) 
+     .reset(reset) 
 ) ; //end filter 
  
  
@@ -1124,7 +1124,8 @@ IIR2_18bit_fixed filter15_RIGHT(
      .a3 (-18'sd65173), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset) 
+     .reset(reset),
+	  .voice_low_new(spect_data15)
 ) ; //end filter 
  
  
@@ -1143,8 +1144,7 @@ IIR2_18bit_fixed filter15_LEFT(
      .a3 (-18'sd65173), 
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
-     .reset(reset),
-	  .voice_low_new(power_f15)
+     .reset(reset) 
 ) ; //end filter 
  
 
@@ -1183,7 +1183,7 @@ IIR2_18bit_fixed filter16_LEFT(
      .state_clk(CLOCK_50), 
      .audio_input_ready(audio_input_ready), 
      .reset(reset),
-	  .voice_low_new(power_f16)
+	  .voice_low_new(spect_data16)
 ) ; //end filter 
  
  /*
@@ -1803,15 +1803,22 @@ IIR2_18bit_fixed filter32_LEFT(
 	
 
 reg [9:0] prev_x [99:0], prev_y[99:0];
+reg [9:0] out_prev_x [99:0], out_prev_y[99:0];
 reg write_prev;
 reg [9:0] audio_data;
 reg [7:0] count; 
 reg [9:0] vga_timer;
 reg [9:0] back_x, back_y;
 wire [10:0] TIME_STOP = 10'd500;
-reg [15:0] spect_data;
-reg [9:0] index;
+wire [17:0] spect_data1, spect_data2, spect_data3, spect_data4, 
+spect_data5, spect_data6, spect_data7, spect_data8,
+spect_data9, spect_data10, spect_data11, spect_data12, 
+spect_data13, spect_data14, spect_data15, spect_data16;
 
+reg [7:0] spect_data ;
+
+reg [9:0] index;
+reg [7:0] color;
 always @(posedge CLOCK_50) begin //CLOCK_50
 	// reset state machine and read/write controls
 	if (reset) begin
@@ -1823,7 +1830,7 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 		audio_data <= 10'd0;
 		count <= 8'd0;
 		write_prev <= 1'b0;
-		spect_data <= power_f1;
+		spect_data <= 8'd0;
 		index <= 10'd1;
 	end
 
@@ -1831,7 +1838,26 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 		write_prev <= 1'b1;
 		count <= 8'd0;
 	end
-
+/*
+	if (bus_write) begin
+		spect_data1 <=  (right_filter_output1);
+		spect_data2 <=  (right_filter_output2);
+		spect_data3 <=  (right_filter_output3);
+		spect_data4 <=  (right_filter_output4);
+		spect_data5 <=  (right_filter_output5);
+		spect_data6 <=  (right_filter_output6);
+		spect_data7  <=  (right_filter_output7);
+		spect_data8  <=  (right_filter_output8);
+		spect_data9  <=  (right_filter_output9);
+		spect_data10 <=  (right_filter_output10);
+		spect_data11 <=  (right_filter_output11);
+		spect_data12 <=  (right_filter_output12);
+		spect_data13 <=  (right_filter_output13);
+		spect_data14 <=  (right_filter_output14);
+		spect_data15 <=  (right_filter_output15);
+		spect_data16 <=  (right_filter_output16);
+	end
+*/
 	//WRITE AUDIO INPUT
 	if (vga_state == 4'd0) begin
 		
@@ -1839,7 +1865,7 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 			vga_sram_write <= 1'b0;
 			audio_data <= bus_read_data;
 			vga_state <= 4'd1;
-			spect_data <= 16'd16384;
+			
 		end
 		else begin
 			vga_state <=4'd0;
@@ -1897,13 +1923,16 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 		end
 	end
 	
+	
+	
+	
 	if (vga_state == 4'd6) begin
 		vga_sram_write <= 1'b1;
 		vga_sram_writedata <= 8'd0;
-		vga_state <=4'd7;
+		
 		vga_y_cood <=vga_y_spect_top;
-		spect_data <= right_filter_output1<<<5;	
-			
+		
+		vga_state <=4'd10;
 	end
 	
 	
@@ -1913,7 +1942,7 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 	if (vga_state == 4'd7) begin
 		
 		if (vga_y_cood < vga_y_spect_top + index*10'd14) begin
-			vga_sram_writedata <= spect_data;
+			vga_sram_writedata <= color;
 			vga_sram_write <= 1'b1;
 			vga_sram_address <= vga_out_base_address + {22'b0, vga_x_cood} + ({22'b0, vga_y_cood}*640);
 			vga_state <=4'd8;
@@ -1928,61 +1957,64 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 		
 	end
 	
-	if (vga_state == 4'd8) begin
+	if (vga_state == 4'd8) begin	
+			
+			if (index == 10'd1) begin
+				spect_data <=  right_filter_output1;	
+			end
+			else if (index == 10'd2) begin
+				spect_data <=  right_filter_output2;	
+			end
+			else if (index == 10'd3) begin
+				spect_data <=  right_filter_output3;	
+			end
+			else if (index == 10'd4) begin
+				spect_data <=  right_filter_output4;	
+			end
+			else if (index == 10'd5) begin
+				spect_data <=  right_filter_output5;	
+			end
+			else if (index == 10'd6) begin
+				spect_data <=  right_filter_output6;	
+			end
+			else if (index == 10'd7) begin
+				spect_data <=  right_filter_output7;	
+			end
+			else if (index == 10'd8) begin
+				spect_data <=  right_filter_output8;	
+			end
+			else if (index == 10'd9) begin
+				spect_data <=  right_filter_output9;	
+			end
+			else if (index == 10'd10) begin
+				spect_data <=  right_filter_output10;	
+			end
+			else if (index == 10'd11) begin
+				spect_data <=  right_filter_output11;	
+			end
+			else if (index == 10'd12) begin
+				spect_data <=  right_filter_output12;	
+			end
+			else if (index == 10'd13) begin
+				spect_data <=  right_filter_output13;	
+			end
+			else if (index == 10'd14) begin
+				spect_data <=  right_filter_output14;	
+			end
+			else if (index == 10'd15) begin
+				spect_data <=  right_filter_output15;	
+			end
+			else begin
+				spect_data <=  right_filter_output16;	
+			end
 	
-		if (index == 10'd1) begin
-			spect_data <=  right_filter_output1<<<5;	
-		end
-		else if (index == 10'd2) begin
-			spect_data <=  right_filter_output2<<<5;	
-		end
-		else if (index == 10'd3) begin
-			spect_data <=  right_filter_output3<<<5;	
-		end
-		else if (index == 10'd4) begin
-			spect_data <=  right_filter_output4<<<5;	
-		end
-		else if (index == 10'd5) begin
-			spect_data <=  right_filter_output5<<<5;	
-		end
-		else if (index == 10'd6) begin
-			spect_data <=  right_filter_output6<<<5;	
-		end
-		else if (index == 10'd7) begin
-			spect_data <=  right_filter_output7<<<5;	
-		end
-		else if (index == 10'd8) begin
-			spect_data <=  right_filter_output8<<<5;	
-		end
-		else if (index == 10'd9) begin
-			spect_data <=  right_filter_output9<<<5;	
-		end
-		else if (index == 10'd10) begin
-			spect_data <=  right_filter_output10<<<5;	
-		end
-		else if (index == 10'd11) begin
-			spect_data <=  right_filter_output11<<<5;	
-		end
-		else if (index == 10'd12) begin
-			spect_data <=  right_filter_output12<<<5;	
-		end
-		else if (index == 10'd13) begin
-			spect_data <=  right_filter_output13<<<5;	
-		end
-		else if (index == 10'd14) begin
-			spect_data <=  right_filter_output14<<<5;	
-		end
-		else if (index == 10'd15) begin
-			spect_data <=  right_filter_output15<<<5;	
-		end
-		else begin
-			spect_data <=  right_filter_output16<<<5;	
-		end
-	
-		vga_sram_write <= 1'b0;
-		vga_y_cood <= vga_y_cood + 10'd1;
-		vga_state <=4'd7;
+			vga_sram_write <= 1'b0;
+			vga_y_cood <= vga_y_cood + 10'd1;
+			vga_state <=4'd10;
+
 	end
+	
+	
 	
 	//Next row 
 	if (vga_state == 4'd9) begin
@@ -1999,6 +2031,43 @@ always @(posedge CLOCK_50) begin //CLOCK_50
 		vga_state <= 4'd0;
 		
 	end
+	
+	if (vga_state == 4'd10) begin
+		vga_sram_write <= 1'b0;
+		if (spect_data < 8'd25) begin
+			color <= 8'd10;
+		end
+		else if (spect_data < 8'd50) begin
+			color <= 8'd20;
+		end
+		else if (spect_data < 8'd75) begin
+			color <= 8'd30;
+		end
+		else if (spect_data < 8'd100) begin
+			color <= 8'd40;
+		end
+		else if (spect_data < 8'd125) begin
+			color <= 8'd50;
+		end
+		else if (spect_data < 8'd150) begin
+			color <= 8'd60;
+		end
+		
+		else if (spect_data < 8'd175) begin
+			color <= 8'd70;
+		end
+		else if (spect_data < 8'd200) begin
+			color <= 8'd80;
+		end
+		else if (spect_data < 8'd225) begin
+			color <= 8'd90;
+		end
+		else begin
+			color <=8'd100;
+		end
+		vga_state <= 4'd7;
+	end
+	
 	
 	
 end // always @(posedge state_clock)
@@ -2481,7 +2550,8 @@ always @ (posedge state_clk)
 begin
 	if (reset)
 	begin
-		state <= 4'd15 ; //turn off the filter state machine	
+		state <= 4'd15 ; //turn off the filter state machine
+		
 	end
 	
 	else begin
@@ -2500,6 +2570,7 @@ begin
 				x_n <= {audio_in[15],audio_in[15], audio_in} ;			
 				// next state
 				state <= 4'd2;
+			
 			end
 	
 			2: 
@@ -2510,6 +2581,7 @@ begin
 				f1_value <= x_n1 ;				
 				// next state
 				state <= 6'd3;
+			
 			end
 			
 			3:
@@ -2520,6 +2592,7 @@ begin
 				f1_value <= x_n2 ;
 				// next state
 				state <= 6'd6;
+				
 			end
 						
 			6: 
@@ -2530,6 +2603,7 @@ begin
 				f1_value <= f1_y_n1 ; 
 				//next state 
 				state <= 6'd7;
+				
 			end
 			
 			7: 
@@ -2540,6 +2614,7 @@ begin
 				f1_value <= f1_y_n2 ; 				
 				//next state 
 				state <= 6'd10;
+				
 			end
 			
 			10: 
@@ -2558,12 +2633,13 @@ begin
 				x_n2 <= x_n1 ;
 				//next state 
 				state <= 5'd15;
+				
 			end	
 			
 			15: // take absolute value
 			begin
 				// wait for the audio_input_ready 
-				if (freq_sw[0])
+				if (freq_sw[3])
 				begin
 					if (audio_input_ready)
 					begin
@@ -2590,6 +2666,7 @@ begin
 					   // ========================================================
 					end
 				end
+				
 				//end
 			end
 			
@@ -2602,10 +2679,10 @@ begin
 					debug <= 1;
 					dds_accum <= dds_accum + freq_sw ;
 					voice_low_new <= voice_in_abs;
-				//	voice_low_new <= ((voice_in_abs - voice_low_old) >>> log_alpha) + voice_low_old;
+					//voice_low_new <= ((voice_in_abs - voice_low_old) >>> log_alpha) + voice_low_old;
 					
 				end
-
+			
 			end
 			
 			
@@ -2616,10 +2693,11 @@ begin
 				// wait for the audio_input_ready 
 				if (audio_input_ready)
 				begin
-				//	voice_low_old <= voice_low_new;
+					//voice_low_new <= voice_low_old;
 					debug <= 0;
 					state <= 5'd1 ; 
-					audio_out <= (modulated_voice >>> 5); 
+					audio_out <= (modulated_voice >>> 5);
+				
 				end
 			end
 			
