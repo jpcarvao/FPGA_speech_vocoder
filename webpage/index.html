@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <meta charset="utf-8">
-    <title>Sonic Communication - Angus Gibbs and Joao Pedro Carvao - ECE 5725 - Cornell University</title>
+    <title>FPGA Speech Vocoder - Cornell University</title>
     <link rel="stylesheet" href="css/bulma.min.css">
     <link rel="stylesheet" href="css/page.css">
   </head>
@@ -12,7 +12,7 @@
         <div class="navbar-brand">
           <a class="navbar-item" href="#">
             <img src="img/cornell_seal_simple_white.svg" alt="Cornell logo" height="40" width="40">
-            Cornell ECE 5725
+            Cornell ECE 5760
           </a>
         </div>
         <div class="navbar-menu">
@@ -35,10 +35,10 @@
     <section class="hero is-light is-medium is-bold">
       <div class="hero-body">
         <div class="container">
-          <h1 class="title">Sonic Communication</h1>
-          <h2 class="subtitle">Angus Gibbs (aag233) and Joao Pedro Carvao (jc2697)</h2>
-          <h2 class="subtitle">Friday, May 11, 2018</h2>
-          <h2 class="subtitle">The goal of this project was to design a communication system using sound rather than electromagnetic propagation. Our design shows an intuitive representation of how information can be communicated wirelessly and uses the PreemptRT kernel patch.</h2>
+          <h1 class="title">FPGA Speech Vocoder</h1>
+          <h2 class="subtitle">Joao Pedro Carvao (jc2697), Justin Joco (jaj263), and Thinesiya Krishnathasan (tk455)</h2>
+          <h2 class="subtitle">Wednesday, May 15, 2019</h2>
+          <h2 class="subtitle">The goal of this project was to design a speech voice encoder that modulates and pitch shifts input audio. This project also includes plots of the audio input's waveform and spectrogram onto a 640x480 pixel monitor, updating in real-time.</h2>
         </div>
       </div>
     </section>
@@ -55,8 +55,9 @@
                 <li>
                   <a href="#design" id="link_design">Design &amp; Testing</a>
                   <ul>
-                    <li><a href="#design_hardware" id="link_design_hardware">Hardware Design</a></li>
-                    <li><a href="#design_software" id="link_design_software">Software Design</a></li>
+                    <li><a href="#design_software" id="link_design_software">Mathematical Background</a></li>
+                    <li><a href="#design_software" id="link_design_software">QSys Bus Design</a></li>
+                    <li><a href="#design_hardware" id="link_design_hardware">Hardware Design</a></li>       
                   </ul>
                 </li>
                 <li>
@@ -283,38 +284,23 @@
 
               <p>Finally, we would work to get transmission working with a mobile phone. Because the encoder is a web application, it can be run on any device with a web browser. We had some success with using an iPhone as the transmitter, but the iPhone sound card seemed to try to "smooth" the transitions between the frequencies, which made the decoding much harder. It also introduced issues with volume control that we did not have time to address; for example, when playing the start chord, the chord would start at full volume and then quickly become quieter without us adjusting the volume.</p>
 
-              <h1 id="work_distribution" class="checkpoint">Work Distribution</h1>
-              <p>Joao Pedro: Hardware and software design and implementation. Report writing: overview, hardware design, decoding, synchronization, results, conclusion.</p>
+             
 
-              <p>Angus: Hardware and software design and implementation. Report writing: software design, testing, synchronization.</p>
+              <h1 id="project_parts" class="checkpoint">Appendix</h1>
+              <h3> Permissions/Approvals </h3>
+              <p>The group approves this report for inclusion on the course website.</p>
+              <p>The group approves the video for inclusion on the course youtube channel.</p>
 
-              <h1 id="project_parts" class="checkpoint">Project Parts</h1>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Part Name</th>
-                    <th>Price (USD)</th>
-                    <th>Link</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Raspberry Pi 3</td>
-                    <td>35</td>
-                    <td><a href="https://www.raspberrypi.org/products/raspberry-pi-3-model-b/">https://www.raspberrypi.org/products/raspberry-pi-3-model-b/</a></td>
-                  </tr>
-                  <tr>
-                    <td>MCP3008</td>
-                    <td>3.75</td>
-                    <td><a href="https://www.adafruit.com/product/856">https://www.adafruit.com/product/856</a></td>
-                  </tr>
-                  <tr>
-                    <td>MAX4466</td>
-                    <td>6.95</td>
-                    <td><a href="https://www.adafruit.com/product/1063">https://www.adafruit.com/product/1063</a></td>
-                  </tr>
-                </tbody>
-              </table>
+              <h3> Commented Verilog Code </h3>
+              
+
+               <h3 id="work_distribution" class="checkpoint">Work Distribution</h3>
+              <p>Joao Pedro: Hardware design and implementation. Report writing: Introduction, conclusion</p>
+
+               <p>Justin: Hardware design and implementation, QSys bus design. Report writing: hardware design, testing, results</p>
+
+              <p>Thinesiya: Hardware design and implementation. Report writing: hardware design, testing, results</p>
+
 
               <h1 id="references" class="checkpoint">References</h1>
               <ul>
