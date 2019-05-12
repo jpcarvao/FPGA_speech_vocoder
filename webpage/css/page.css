@@ -1,0 +1,9 @@
+#menu-container {
+  position: relative;
+}
+
+#menu {
+  position: absolute;
+  top: 0;
+  width: 90%;
+}
