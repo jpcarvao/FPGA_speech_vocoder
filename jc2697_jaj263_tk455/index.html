@@ -8,7 +8,7 @@
     <script type="text/javascript" src="http://latex.codecogs.com/latexit.js"></script>
   </head>
   <body>
-    <nav class="navbar is-link is-fixed-top">
+    <nav class="navbar is-link is-sticky-top">
       <div class="container">
         <div class="navbar-brand">
           <a class="navbar-item" href="#">
@@ -53,13 +53,11 @@
                 <li>
                   <a href="#intro" id="link_intro" class="is-active">Introduction</a>
                 </li>
+                 <li>
+                  <a href="#high_level_design" id="link_high_level">High Level Design</a>
+                </li>
                 <li>
-                  <a href="#design" id="link_design">Design &amp; Testing</a>
-                  <ul>
-                    <li><a href="#design_math" id="link_math">Mathematical Background</a></li>
-                    <li><a href="#design_qsys" id="link_design_qsys">QSys Bus Design</a></li>
-                    <li><a href="#design_hardware" id="link_design_hardware">Hardware Design</a></li>       
-                  </ul>
+                  <a href="#hardware_design" id="link_hardware">Hardware Design</a>
                 </li>
                 <li>
                   <a href="#results" id="link_results">Results</a>
@@ -68,7 +66,10 @@
                   <a href="#conclusions" id="link_conclusions">Conclusions</a>
                 </li>
                 <li>
-                  <a href="#work_distribution" id="link_work_distribution">Appendix</a>
+                  <a href="#appendix" id="link_appendix">Appendix</a>
+                </li>
+                 <li>
+                  <a href="#references" id="link_references">References</a>
                 </li>
               </ul>
             </aside>
@@ -81,26 +82,20 @@
                <p>For data visualization, we had a basic GPU implemented as part of our FPGA system taking readings from the processed data to display a spectrogram and magnitude of voice on the VGA screen in real-time.  </p>
 
 
+              <h1 id="high_level_design" class="checkpoint">High Level Design</h1>
 
-              <h1 id="design" class="checkpoint">Design &amp; Testing</h1>
+              <h1 id="hardware_design" class="checkpoint">Hardware Design</h1>
              
 
 
-              <h3 id="design_math" class="checkpoint">Mathematical Background</h3>
-
-
-              <h3 id="design_qsys" class="checkpoint">QSys Bus Design</h3>
-              <p>Though our Qsys bus design initially was configured to work with audio input and output, we modified our design to include 
-              a VGA bus-master in order to write to a 640 x 480 pixel monitor, in real time. Our design is as follows:</p>
-
-
-
-
-              <h3 id="design_hardware" class="checkpoint">Hardware Design</h3>
               
               <h4>Vocoder Design and Implementation</h4>
               <p></p>
 
+
+               <h4 id="design_qsys" class="checkpoint">QSys Bus Configuration</h4>
+              <p>Though our Qsys bus design initially was configured to work with audio input and output, we modified our design to include 
+              a VGA bus-master in order to write to a 640 x 480 pixel monitor, in real time. Our design is as follows:</p>
 
 
                <h4>GPU Design and Implementation</h4>
@@ -156,12 +151,12 @@
              
 
                <h3 id="work_distribution" class="checkpoint">Appendix B: Work Distribution</h3>
-              <p>Joao Pedro: Hardware design and implementation: Audio modulation and pitch shifting. Report writing: Introduction, Design and Testing, Conclusions</p>
+              <p>Joao Pedro: Hardware design and implementation: Filter design, audio modulation and sound mixing. Report writing: Introduction, Design and Testing, Conclusions</p>
               <p>Justin: Hardware design and implementation: VGA waveform/spectrogram, QSys bus design. Report writing: Design and Testing, Results</p>
-              <p>Thinesiya: Hardware design and implementation: Audio modulation and pitch shifting. Report writing: Design and Testing, Results</p>
+              <p>Thinesiya: Hardware design and implementation: Filter design, audio modulation and sound mixing. Report writing: Design and Testing, Results</p>
 
 
-              <h3 id="references" class="checkpoint">Appendix C: References</h3>
+              <h1 id="references" class="checkpoint">References</h1>
               <ul>
                 <li><a href="https://people.ece.cornell.edu/land/courses/ece5760/DE1_SOC/HPS_peripherials/DSP_index.html">https://people.ece.cornell.edu/land/courses/ece5760/DE1_SOC/HPS_peripherials/DSP_index.html</a></li>
                 <li><a href="https://people.ece.cornell.edu/land/courses/ece5760/DE1_SOC/HPS_peripherials/Bus_master_slave_index.html">https://people.ece.cornell.edu/land/courses/ece5760/DE1_SOC/HPS_peripherials/Bus_master_slave_index.html</a></li>
