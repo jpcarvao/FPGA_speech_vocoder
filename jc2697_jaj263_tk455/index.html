@@ -37,7 +37,7 @@
       <div class="hero-body">
         <div class="container">
           <h1 class="title">FPGA Speech Vocoder</h1>
-          <h2 class="subtitle">Joao Pedro Carvao (jc2697), Justin Joco (jaj263), and Thinesiya Krishnathasan (tk455)</h2>
+          <h2 class="subtitle">Jo&atilde;o Pedro Carv&atilde;o (jc2697), Justin Joco (jaj263), and Thinesiya Krishnathasan (tk455)</h2>
           <h2 class="subtitle">Wednesday, May 15, 2019</h2>
           <h2 class="subtitle">The goal of this project was to design a real-time speech vocoder on an FPGA. Our design shows a highly parallel design built on the foundations of digital signal processing and CPU design.</h2>
         </div>
@@ -76,7 +76,11 @@
           <div class="column is-two-thirds">
             <div class="content">
               <h1 id="intro" class="checkpoint">Introduction</h1>
-             
+              <p>Our final project for ECE 5760: Advanced Microcontroller Design and System-on-Chip is a highly parallel hardware vocoder for real-time speech synthesis and visualization on a monitor through a VGA interface. We implemented the vocoder on a DE1-SoC Development Kit. The entire system was built on the board’s Cyclone V FPGA. That is, audio input, analysis, synthesis, output, and visualization was done on the FPGA. </p>
+               <p>To implement the vocoder, we can input sound from any audio source with an aux connection to the board through the audio bus master, passing the input through several IIR filters to generate the mel cepstrum of the input stream for analysis, and a few more stages of filtering for quality control before finally reconstructing the sound. Once the coded voice is ready, it is put back into the audio bus master to be output into any speaker with an aux connection.</p>
+               <p>For data visualization, we had a basic GPU implemented as part of our FPGA system taking readings from the processed data to display a spectrogram and magnitude of voice on the VGA screen in real-time.  </p>
+
+
 
               <h1 id="design" class="checkpoint">Design &amp; Testing</h1>
              
@@ -86,9 +90,38 @@
 
 
               <h3 id="design_qsys" class="checkpoint">QSys Bus Design</h3>
+              <p>Though our Qsys bus design initially was configured to work with audio input and output, we modified our design to include 
+              a VGA bus-master in order to write to a 640 x 480 pixel monitor, in real time. Our design is as follows:</p>
+
+
+
 
               <h3 id="design_hardware" class="checkpoint">Hardware Design</h3>
-            
+              
+              <h4>Vocoder Design and Implementation</h4>
+              <p></p>
+
+
+
+               <h4>GPU Design and Implementation</h4>
+              <figure>
+                <img src="img/VGA_state_machine.png" width=100%>         
+                <figcaption>Figure: GPU State Machine</figcaption>
+              </figure>
+         
+              <ul>
+                <li>S0: Read audio input</li>
+                <li>S1: Calculate y coord based on audio data amplitude</li>
+                <li>S2:  If y coordinate exceeds bounds of top half of screen, shift his y coordinate up 120 pixels</li>
+                <li>S3: Write waveform pixel onto the top-half of monitor based on calculated y coordinate with color white</li>
+                <li>S4: Wait 1 cycle</li>
+                <li>S5: Set the pixel point drawn 100 cycles before the current point to black. Skip this if we have not drawn 100 points yet.</li>
+                <li>S6: Read first filter's LPF power</li>
+                <li>S7: Write spectrogram bin onto the bottom-half of monitor for a specific filter for in a given column for 7 subsequent pixels row-wise based on color mapping. Set to read the next filter's LPF power, if we haven't drawn all 32 filter LPF powers. If we have drawn all 32, go to S9</li>
+                <li>S8: Read a filter's LPF power based on index</li>
+                <li>S9: Set to write in the next pixel column and set SM to read the first filter's LPF power on next SM cycle</li>
+                <li>S10: Map LPF power to a color for writing based on log scaling</li>
+              </ul>
 
               <h1 id="results" class="checkpoint">Results</h1>
 
@@ -107,11 +140,13 @@
 
               <h3 id="video_demo">Video Demo</h3>
               <center>
-              <iframe width="560" height="315" src="https://www.youtube.com/embed/iNSBS0w0rd4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </center>
-              <h1 id="conclusions" class="checkpoint">Conclusion</h1>
-              
+                  <iframe width="560" height="315" src="https://www.youtube.com/embed/iNSBS0w0rd4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              </center>
+              <h1 id="conclusions" class="checkpoint">Conclusions</h1>
+
              
+
+
 
               <h1 id="project_parts" class="checkpoint">Appendix</h1>
               <h3> Appendix A: Permissions </h3>
@@ -130,6 +165,8 @@
               <ul>
                 <li><a href="https://people.ece.cornell.edu/land/courses/ece5760/DE1_SOC/HPS_peripherials/DSP_index.html">https://people.ece.cornell.edu/land/courses/ece5760/DE1_SOC/HPS_peripherials/DSP_index.html</a></li>
                 <li><a href="https://people.ece.cornell.edu/land/courses/ece5760/DE1_SOC/HPS_peripherials/Bus_master_slave_index.html">https://people.ece.cornell.edu/land/courses/ece5760/DE1_SOC/HPS_peripherials/Bus_master_slave_index.html</a></li>
+                <li><a href="https://people.ece.cornell.edu/land/courses/ece5760/DE1_SOC/Audio_core.pdf">https://people.ece.cornell.edu/land/courses/ece5760/DE1_SOC/Audio_core.pdf</a></li>
+                <li><a href="http://people.ece.cornell.edu/land/courses/ece5760/DE1_SOC/DE1-SoC_User_manualv.1.2.2_revE.pdf">http://people.ece.cornell.edu/land/courses/ece5760/DE1_SOC/DE1-SoC_User_manualv.1.2.2_revE.pdf</a></li>
                 <li><a href="https://people.ece.cornell.edu/land/courses/ece5760/DE1_SOC/HPS_peripherials/univ_pgm_computer.index.html">https://people.ece.cornell.edu/land/courses/ece5760/DE1_SOC/HPS_peripherials/univ_pgm_computer.index.html</a></li>
                 <li><a href="https://en.wikipedia.org/wiki/Mel-frequency_cepstrum">https://en.wikipedia.org/wiki/Mel-frequency_cepstrum</a></li>
                  <li><a href="https://people.ece.cornell.edu/land/courses/ece5760/FinalProjects/f2007/tjs49aw259/index.html">https://people.ece.cornell.edu/land/courses/ece5760/FinalProjects/f2007/tjs49aw259/index.html</a></li>
