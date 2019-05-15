@@ -20,6 +20,7 @@
   // Get the scroll positions of all the checkpoints
   var checkpointEls = document.querySelectorAll(".checkpoint");
   var checkpoints = [];
+
   for (var i = 0; i < checkpointEls.length; i++) {
     checkpoints.push({
       id: checkpointEls[i].id,
@@ -32,8 +33,10 @@
     return 0;
   });
 
+
   // Highlight the correct menu element whenever a new checkpoint is passed
   var currHighlighted = checkpoints[0].id;
+
   function updateHighlight(e) {
     // Get the currently scrolled to element
     var i = 0;
