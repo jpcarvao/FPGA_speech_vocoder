@@ -102,7 +102,7 @@
               <p>For speech analysis, we started with the IIR Filter example on the <a href="https://people.ece.cornell.edu/land/courses/ece5760/DE1_SOC/HPS_peripherials/DSP_index.html">DSP page</a> of the ECE 5760 website as well as the accompanying MATLAB code.  We used the MATLAB code to generate the filter coefficients for these bandpass filters.  Figure 1 shows an amplitude plot for each filter, specified at a certain center frequency.  The edges of each bandpass filter were selected to be the frequency at which the amplitude dropped down to about 50% of the peak at the center frequency.</p>
               <figure>
                 <img src="img/matlab_iir.jpg" width=100%>         
-                <figcaption>Figure 1: 32 Bandpass filter profile</figcaption>
+                <figcaption>Figure 1: 32 bandpass filter profile</figcaption>
               </figure>
 
 
@@ -158,7 +158,7 @@
              <br>
                <h4>GPU Design and Implementation</h4>
 
-                <p>To write to the monitor through the VGA in parallel with the real-time voice modulation, the GPU state machine ran on the FPGA’s audio clock, rather than the 50MHz clock, to sample audio at a rate of 24 kHz. To optimize writing speed, the FPGA wrote directly to the monitor via the VGA bus-master based on the bus design above. On each state machine cycle, the FPGA reads the audio input and writes its respective waveform sample to the top-half of the pixel monitor. The height of each pixel of the drawn wave is proportional to the input audio’s magnitude. Afterwards, the FPGA writes the modulated audio’s 32-frequency bin spectrogram onto the bottom-half of the screen. Each waveform and spectrogram update on the monitor occurs in real-time, and previously drawn points are either cleared or overwritten.</p>
+                <p>To write to the monitor through the VGA in parallel to the real-time voice modulation, we configured the GPU state machine to run on the FPGA’s audio clock, rather than the 50MHz clock. This allows us to sample audio at a rate of 24 kHz. To optimize writing speed, we programmed the FPGA to write directly to the monitor via the VGA bus-master based on the bus design detailed above. On each state machine cycle, the FPGA reads the audio input and writes its respective waveform sample to the top-half of the pixel monitor. The height of each pixel of the drawn wave is proportional to the input audio’s magnitude. Afterwards, the FPGA writes the modulated audio’s 32-frequency bin spectrogram onto the bottom-half of the screen. Each waveform and spectrogram update on the monitor occurs in real-time, and clears or overwrittes previously rendered points.</p>
 
 
               <p>The GPU's state machine shown in the Figure 4, with states defined, illustrates the above:</p>
@@ -185,19 +185,19 @@
               <br>
 
              <h4>GPU Testing</h4>
-              <p>In order to test both the waveform and spectrogram, we fed different audio samples into the FPGA's audio input, including our own voices and audio playback. We asked our ourselves the following:</p>
+              <p>To test both the waveform and spectrogram, we fed different audio samples into the FPGA's audio input, including our own voices and audio playback. We asked our ourselves the following:</p>
               <ul>
                 <li>Did input sounds result in higher waveform amplitudes than silence?</li>
-                <li>Did the spectrogram change relatively to different pitch frequencies?</li>
-                <li>Did the duration of changes in audio input and the graphs match?</li>
-                <li>Did the spectrogram at a given time match the oscilloscope's frequency-domain reading?</li>
+                <li>Did the VGA spectrogram change relative to different pitch frequencies?</li>
+                <li>Did the duration of changes in audio input and the VGA plots match?</li>
+                <li>Did the power reading on the VGA spectrogram at a given time match the oscilloscope's frequency-domain reading?</li>
               </ul>
-              <p>These questions, in addition to several others, helped with debugging the GPU implementation.</p>
+              <p>This helped with debugging the GPU implementation.</p>
               <hr>
 
 
               <h1 id="results" class="checkpoint">Results</h1>
-             <p> Overall, the results of our project successfully met our expectations. Our full set up is shown in Figure 5. It includes the FPGA, the monitor display, speakers, and the oscilliscope. </p>
+             <p> Overall, project's results successfully met our expectations for a real-time hardware vocoder. Our full set up is shown in Figure 5. It includes the FPGA, the monitor display, speakers, and the oscilliscope. </p>
                <figure>
                 <img src="img/overview_with_mod.jpeg" width=45%>
                 <img src="img/overview_no_modulation.jpeg" width=45%>          
@@ -207,7 +207,7 @@
 
              
               <h4 id="video_demo">Video Demo</h4>
-               <p>The subsequent video demonstrates our vocoder. We show voice modulation, pitch-shifting, and GPU graph writing.</p>
+               <p>This video demonstrates our vocoder. We show voice modulation, pitch-shifting, and GPU graph writing.</p>
                   <center>
                       <iframe width="560" height="315" src="https://www.youtube.com/embed/iNSBS0w0rd4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                   </center>
@@ -215,9 +215,9 @@
 
               <br>
               <h4>Discussion</h4>
-                <p>Based on the video, we modulated input audio with 32 IIR filters and pitch-shifted using the FPGA switches in real-time. With 32 filters, our modulated voice sounded metallic. With pitch shifting, we increased our voice frequency from our original. Combining both result in speaking like a shrill-voiced robot. In addition, the FPGA is successful in clearing pixels in the audio waveform that were written 100 cycles before the current point.</p>
+                <p>We modulated input audio with 32 IIR filters and altered the input's pitch using the FPGA switches in real-time. With 32 filters, our modulated voices sounded metallic. By shifting the input's pitch, we increased our voices' frequency from our original tones. Combining both result in speaking like a shrill-voiced robot. In addition, the FPGA successfully clears pixels in the audio waveform written 100 cycles before the current point.</p>
 
-                <p>On the GPU side, we noted that it took the FPGA about 10-12 seconds to write across the screen at our specified audio sampling rate of 24kHz. The following figures show our monitor at various states. </p>
+                <p>On the GPU side, we note that it took the FPGA about 10-12 seconds to write across the screen at our specified audio sampling rate of 24kHz. The following figures show our monitor at various states. </p>
               <br>
               <figure>
                 <img src="img/spect_flat.jpeg" width=60%>       
@@ -240,9 +240,9 @@
                 <figcaption>Figure 9: Monitor with continuous input audio at various pitches</figcaption>
               </figure>
 
-              <p>Based on the VGA color mapping design, blue represented low LPF energy; whereas, red represented high energy. Increases in energy was represented by colors changing from blue to red.</p>
+              <p>Based on the VGA color mapping design, blue represented low low pass filter energy and red represented high energy. Increases in energy were represented by colors changing from blue to red.</p>
            
-              <p>According to Figure 7 and 8, we saw that the length of a spectrogram change matched that for brief audio inputs, more specifically for those of less than 50ms. In Figure 9, we also saw that the FPGA was good at detecting changes in pitch for continuous audio, as the spectrogram curve matched that of a speaker continuously whistling at different frequencies. For each of these, the audio waveform was very sparse due to the magnitude of the audio input. Notice that for Figure 6, the audio waveform looked less sparse due to a lack of audio input.</p>
+              <p>According to Figure 7 and 8, we saw that the length of a spectrogram change matched that for brief audio inputs, more specifically for those of less than 50ms. In Figure 9, we also noted that the FPGA was good at detecting changes in pitch for continuous audio, as the spectrogram curve matched that of a speaker continuously whistling at different frequencies. For each of these, the audio waveform was very sparse due to the magnitude of the audio input. Notice that for Figure 6, the audio waveform looked less sparse due to a lack of audio input.</p>
 
               <h4>Usability</h4>
               <p>Our design is very usable. A user only needs to use speak into the mic and set the switches to enable/disable modulation and change the output pitch.</p>
@@ -252,6 +252,9 @@
               <h1 id="conclusions" class="checkpoint">Conclusions</h1>
               <p>A hardware implementation of a vocoder on an FPGA is a very natural task to implement, as the parallel nature of FPGA design lends itself to real time digital signal processing techniques. In addition to the real time benefits, this project has some exposure to audio bus master and GPU design through the audio interfaces and VGA functions we implemented. Additionally, we needed to consider the resource constraints of the FPGA, particularly with DSP blocks for the hardware multiplies we needed to implement our system. This requires sharing resources between different channels as well as careful consideration when designing our hardware’s mathematical operations. </p>
               <p>This project also catered to our love of digital signal processing and the tonal qualities of sound, resulting in a very enjoyable design experience. </p>
+
+              <h5>Future Work</h5>
+              <p>With more time on this project, we can additional settings to our under interface, including pitch-shifting to lower frequencies and setting different power alocations per channel.</p>
 
               <h5>Standards</h5>
               <p>No standard was involved in this project.</p>
@@ -271,14 +274,14 @@
               <p><b>The group approves the video for inclusion on the course Youtube channel.</b></p>
 
               <h3 id="work_distribution">Appendix B: Program Listings</h3>
-              <p>An up-to-date version of all of the code written for this project (along with this webpage's files) can be found in the following Github repository: <a href="https://github.com/jc2697/ece5760_final_project" target="_blank">https://github.com/jc2697/ece5760_final_project</a></p>
+              <p>An up-to-date version of all of the code written for this project can be found in the following Github repository: <a href="https://github.com/jc2697/ece5760_final_project" target="_blank">https://github.com/jc2697/ece5760_final_project</a></p>
               <p>Additionally, you may download a local copy here: <a href="code.zip">code.zip</a> (5/13/2019). This is the version of the code used during the project demonstration.</p>
   
 
                <h3 id="work_distribution">Appendix C: Work Distribution</h3>
-              <p>Joao Pedro: Hardware design and implementation: Filter design, audio modulation and sound mixing. Report writing: Introduction, Highh Level Design, Hardware Design, Conclusions</p>
-              <p>Justin: Hardware design and implementation: VGA audio waveform/spectrogram, QSys bus design. Report writing: High Level Design, Hardware Design, Results</p>
-              <p>Thinesiya: Hardware design and implementation: Filter design, audio modulation and sound mixing. Report writing: Hardware Design</p>
+              <p>Joao Pedro: Hardware design and implementation: Filter design, audio modulation, and sound mixing. Report writing: Introduction, High Level Design, Hardware Design, Conclusions.</p>
+              <p>Justin: Hardware design and implementation: VGA audio waveform/spectrogram, QSys bus design. Report writing: High Level Design, Hardware Design, Results.</p>
+              <p>Thinesiya: Hardware design and implementation: Filter design, audio modulation, and sound mixing. Report writing: Hardware Design.</p>
 
 
               <h1 id="references" class="checkpoint">References</h1>
@@ -304,7 +307,7 @@
                   <p>Spectrogram</p>
                   
                  <li><a href="https://courses.ece.cornell.edu/ece5990/ECE5725_Spring2018_Projects/aag233_jc2697/index.html">https://courses.ece.cornell.edu/ece5990/ECE5725_Spring2018_Projects/aag233_jc2697/index.html</a></li>
-                 <p>Website page</p>
+                 <p>Webpage design</p>
               </ul>
 
               

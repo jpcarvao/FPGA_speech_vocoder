@@ -8,7 +8,8 @@
   width: 90%;
 }
 
-hr{
+/*hr{
 	color:black;
 	background-color:black;
-}
+}*/
+<hr style="height:1px;border:none;color:#333;background-color:#333;" />
